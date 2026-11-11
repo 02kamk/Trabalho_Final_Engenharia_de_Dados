@@ -6,7 +6,7 @@ Esta página documenta a modelagem do esquema `origem` (issue #15). O DDL está 
 
 ![Diagrama do esquema origem](diagrama_origem.png)
 
-Versão vetorial: [diagrama_origem.svg](diagrama_origem.svg). Cada linha é uma chave estrangeira, com a cor da tabela que a declara. O esquema tem 15 tabelas, todas com chave primária, e 25 chaves estrangeiras.
+Cada linha é uma chave estrangeira, com a cor da tabela que a declara. O esquema tem 15 tabelas, todas com chave primária, e 25 chaves estrangeiras.
 
 ## Estrutura
 

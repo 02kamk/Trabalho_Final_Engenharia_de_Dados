@@ -4,7 +4,6 @@ nav:
   - Fontes e limpeza: fontes.md
   - Validação: validacao.md
   - Banco de origem: banco.md
-  - Modelagem normalizada: modelagem.md
 markdown_extensions:
   - admonition
   - toc:
