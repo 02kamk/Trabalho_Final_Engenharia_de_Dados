@@ -93,7 +93,7 @@ O resultado deve listar as **15 tabelas** da seção [Modelo](#modelo). Elas tam
 
 ### 7. Carregar os dados (issue #8)
 
-1. Os 15 CSVs da base normalizada estão versionados em `dados/origem-validada/`. Para gerá-los de novo a partir do ZIP da coleta, veja [Fontes e limpeza](fontes.md).
+1. Os 15 CSVs da base normalizada estão versionados em `dados/origem-validada/`. É essa cópia pública, com CPF/CNPJ removidos, que a carga usa. Para reprocessar a partir do ZIP da coleta, veja [Fontes e limpeza](fontes.md) e gere em outro diretório, sem sobrescrever esta pasta.
 2. Confira se as tabelas estão vazias. A carga inicial não substitui linhas existentes, e uma chave repetida desfaz tudo.
 3. Na raiz do repositório, com a `DATABASE_URL` carregada como no passo 5, execute a carga e depois a validação:
 

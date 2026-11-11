@@ -2,5 +2,11 @@
 .venv/
 __pycache__/
 site/
-dados/
 *.zip
+
+# Em dados/, só os CSVs públicos de dados/origem-validada são versionados.
+# Saídas locais do limpar.py (dados/regerada/, origem.sqlite3) ficam fora do Git.
+dados/*
+!dados/origem-validada/
+dados/origem-validada/*
+!dados/origem-validada/*.csv
