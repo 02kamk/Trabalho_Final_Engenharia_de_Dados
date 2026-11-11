@@ -37,9 +37,15 @@ Regras de chave:
     - **Region:** `South America (São Paulo)`, a mais próxima.
 3. Aguarde o provisionamento, que leva alguns minutos.
 
-### 2. Convidar os integrantes
+### 2. Acesso dos integrantes
 
-Em **Organization settings → Team → Invite**, convide o e-mail de cada integrante do grupo com o papel **Developer** ou superior.
+O projeto foi criado em uma organização no plano gratuito do Supabase, que não permite convidar outros membros para o painel. O convite seria feito em **Organization settings → Team → Invite**, por e-mail. Contas do GitHub não podem ser convidadas diretamente, porque servem apenas como forma de login.
+
+Por isso, a equipe acessa o banco **pela string de conexão PostgreSQL**, e não pelo painel. Esse acesso cobre tudo o que o trabalho exige: aplicar o DDL, fazer a carga, rodar o pipeline e consultar os dados.
+
+- O responsável pelo projeto envia a `DATABASE_URL` aos integrantes por um canal privado da equipe, nunca pelo GitHub.
+- Cada integrante cola a URL no próprio `.env`, a partir do `.env.example`.
+- Para conferir as tabelas sem o painel, use o `psql` ou um cliente como DBeaver ou pgAdmin com a mesma URL.
 
 ### 3. Configurar a conexão local
 
@@ -110,7 +116,7 @@ A carga segue a ordem das chaves estrangeiras: primeiro as dimensões, depois os
 | `.env.example` e `.env` fora do Git | Concluído |
 | Integridade relacional validada localmente (`origem.sqlite3`) | Concluído |
 | Projeto criado no Supabase | Concluído |
-| Integrantes convidados para o projeto | A confirmar |
+| Acesso dos integrantes (pela string de conexão, por causa do plano gratuito) | Concluído |
 | DDL aplicado no Supabase (11/11/2026) | Concluído |
 | Carga e validação no Supabase (issue #8) | Pendente |
 
