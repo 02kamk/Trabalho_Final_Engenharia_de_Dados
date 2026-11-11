@@ -29,4 +29,4 @@ O total soma registros com granularidades diferentes. O detalhamento de empenhos
 
 Foram removidos 35 registros repetidos de dotação e 522 detalhes repetidos. As três listagens com identificador do portal não tinham repetição de chave.
 
-A carga e a validação no PostgreSQL do Supabase estão pendentes.
+Em 11/11/2026, a base foi carregada no PostgreSQL do Supabase. As contagens por tabela e por exercício no banco são iguais às desta página, e nenhuma das 25 chaves estrangeiras tem registros órfãos. O detalhamento está em [Banco de origem](banco.md#verificacao-da-carga-no-supabase).
