@@ -4,3 +4,7 @@ nav:
   - Fontes e limpeza: fontes.md
   - Validação: validacao.md
   - Banco de origem: banco.md
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
