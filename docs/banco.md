@@ -8,6 +8,7 @@ Esta página documenta a criação do banco de origem (issue #7) e a carga dos d
 | --- | --- |
 | `sql/origem.sql` | DDL. Cria o esquema `origem` e as 15 tabelas com chaves primárias e estrangeiras, em uma única transação. |
 | `sql/carga_inicial.sql` | Carga. Copia os CSVs de `dados/origem-validada/` para as tabelas, em uma única transação. |
+| `sql/validacao_carga.sql` | Validação. Confere a contagem de linhas contra os CSVs e procura chaves órfãs. Só faz leitura. |
 | `.env.example` | Modelo da variável de conexão `DATABASE_URL`. |
 | `.env` | Cópia local com a senha real. Está no `.gitignore` e nunca vai para o repositório. |
 
@@ -92,15 +93,26 @@ O resultado deve listar as **15 tabelas** da seção [Modelo](#modelo). Elas tam
 
 ### 7. Carregar os dados (issue #8)
 
-1. Gere os CSVs em `dados/origem-validada/` com o script de limpeza. Veja [Fontes e limpeza](fontes.md).
-2. Com as tabelas vazias, execute:
+1. Os 15 CSVs da base normalizada estão versionados em `dados/origem-validada/`. É essa cópia pública, com CPF/CNPJ removidos, que a carga usa. Para reprocessar a partir do ZIP da coleta, veja [Fontes e limpeza](fontes.md) e gere em outro diretório, sem sobrescrever esta pasta.
+2. Confira se as tabelas estão vazias. A carga inicial não substitui linhas existentes, e uma chave repetida desfaz tudo.
+3. Na raiz do repositório, com a `DATABASE_URL` carregada como no passo 5, execute a carga e depois a validação:
 
 ```powershell
 psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/carga_inicial.sql
+psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/validacao_carga.sql
 Remove-Item Env:DATABASE_URL
 ```
 
 A carga segue a ordem das chaves estrangeiras: primeiro as dimensões, depois os registros e por último os detalhes. Ela é transacional, então uma chave duplicada ou órfã desfaz tudo. Use sempre arquivos gerados na mesma execução da limpeza.
+
+O `sql/validacao_carga.sql` só faz leitura e mostra quatro conferências:
+
+1. **Contagem de linhas:** o número de linhas de cada tabela comparado com o de registros do CSV correspondente.
+2. **Chaves órfãs:** para cada uma das 25 chaves estrangeiras, quantos registros apontam para um pai inexistente. O esperado é 0.
+3. **Restrições no catálogo:** quantas chaves e restrições existem e se todas estão validadas pelo PostgreSQL.
+4. **Linhas por exercício:** a distribuição de 2023 a 2026, para comparar com [Validação](validacao.md).
+
+O resultado de cada conferência mostra `OK` ou o tipo de problema encontrado.
 
 ## Segurança
 
@@ -118,11 +130,12 @@ A carga segue a ordem das chaves estrangeiras: primeiro as dimensões, depois os
 | Projeto criado no Supabase | Concluído |
 | Acesso dos integrantes (pela string de conexão, por causa do plano gratuito) | Concluído |
 | DDL aplicado no Supabase (11/11/2026) | Concluído |
-| Carga e validação no Supabase (issue #8) | Pendente |
+| Carga no Supabase (issue #8, 11/11/2026) | Concluído |
+| Contagem de linhas e integridade referencial no Supabase (issue #8) | Concluído |
 
 ### Verificação do DDL no Supabase
 
-Conferência feita em 11/11/2026 pelo Session pooler, em PostgreSQL 17.11. O esquema `origem` tem as 15 tabelas, todas com chave primária, e 25 chaves estrangeiras. As tabelas estão vazias e aguardam a carga da issue #8. O esquema `origem` não está exposto na Data API, que continua com a configuração padrão.
+Conferência feita em 11/11/2026 pelo Session pooler, em PostgreSQL 17.11. O esquema `origem` tem as 15 tabelas, todas com chave primária, e 25 chaves estrangeiras. Na data dessa verificação, as tabelas ainda estavam vazias. O esquema `origem` não está exposto na Data API, que continua com a configuração padrão.
 
 | Tabela | Colunas | Chaves estrangeiras |
 | --- | ---: | ---: |
@@ -153,3 +166,34 @@ ORDER BY 1, 2;
 ```
 
 Referência: [Conexões PostgreSQL no Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres).
+
+### Verificação da carga no Supabase
+
+Carga feita em 11/11/2026 com `sql/carga_inicial.sql`, a partir dos CSVs versionados em `dados/origem-validada/`. A transação terminou com `COMMIT` em cerca de 18 segundos. Em seguida, `sql/validacao_carga.sql` conferiu o resultado.
+
+**Contagem de linhas.** As 15 tabelas têm exatamente o número de registros dos CSVs, que também foram contados com um leitor de CSV, e não por linhas de texto.
+
+| Tabela | Registros no CSV | Linhas no banco | Status |
+| --- | ---: | ---: | --- |
+| `exercicio` | 4 | 4 | OK |
+| `orgao` | 25 | 25 | OK |
+| `unidade` | 121 | 121 | OK |
+| `funcao` | 20 | 20 | OK |
+| `subfuncao` | 52 | 52 | OK |
+| `recurso` | 161 | 161 | OK |
+| `elemento` | 318 | 318 | OK |
+| `credor` | 4.856 | 4.856 | OK |
+| `empenho` | 62.405 | 62.405 | OK |
+| `diaria` | 11.455 | 11.455 | OK |
+| `emenda` | 40 | 40 | OK |
+| `dotacao` | 1.482 | 1.482 | OK |
+| `empenho_dotacao` | 62.527 | 62.527 | OK |
+| `fonte_dotacao` | 2.995 | 2.995 | OK |
+| `suplementacao` | 5.390 | 5.390 | OK |
+| **Total** | **151.851** | **151.851** | **OK** |
+
+**Integridade referencial.** Nenhuma das 25 chaves estrangeiras tem registros órfãos. O catálogo do PostgreSQL mostra 15 chaves primárias, 25 chaves estrangeiras, 9 restrições de unicidade e 1 checagem, todas validadas.
+
+**Distribuição por exercício.** As contagens de 2023 a 2026 no banco são iguais às da validação local, em [Validação](validacao.md).
+
+**Dados pessoais.** A carga usou a cópia pública dos CSVs. Nela, o campo `cpf_cnpj` de `emenda` está vazio e os identificadores encontrados em campos de texto estão mascarados. As chaves relacionais e as contagens foram preservadas.

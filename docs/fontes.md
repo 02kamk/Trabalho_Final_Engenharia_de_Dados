@@ -25,11 +25,16 @@ Os três descartes foram mantidos mesmo com arquivos correspondentes no ZIP.
 
 ## Executar
 
-Na raiz, com Python 3.9 ou superior, indique o ZIP e um diretório de saída novo.
+Na raiz, com Python 3.9 ou superior, indique o ZIP e um diretório de saída que ainda não exista. O script não grava em um diretório existente.
 
 ```powershell
-python src/limpar.py "C:\caminho\despesas-criciuma-2023-a-2026.zip" dados/origem-validada
+python src/limpar.py "C:\caminho\despesas-criciuma-2023-a-2026.zip" dados/regerada
 ```
+
+!!! danger "Não grave sobre `dados/origem-validada`"
+    `dados/origem-validada/` guarda a cópia pública da base, versionada no Git. Nela, o `cpf_cnpj` das emendas está vazio e os identificadores em campos de texto estão mascarados. O `limpar.py` não aplica esse mascaramento, então a saída dele contém CPF e CNPJ de favorecidos.
+
+    Gere sempre em outro diretório, como `dados/regerada/`. O `.gitignore` ignora tudo em `dados/` fora dos CSVs públicos, então essa saída não vai para o repositório. Não apague nem substitua os arquivos de `dados/origem-validada/` com a saída do script.
 
 - Datas de empenho são interpretadas como datas ISO e conferidas contra o exercício. Emendas têm apenas exercício.
 - Valores monetários são tratados com Decimal e exportados com duas casas. Campos vazios viram nulos e zeros são preservados.
