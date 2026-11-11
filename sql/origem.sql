@@ -104,4 +104,63 @@ CREATE TABLE IF NOT EXISTS emenda (
     valor_pago NUMERIC(18,2),
     PRIMARY KEY (ano, id_origem)
 );
+
+CREATE TABLE IF NOT EXISTS dotacao (
+    ano INTEGER NOT NULL REFERENCES exercicio(ano),
+    id_origem TEXT NOT NULL,
+    entidade TEXT NOT NULL,
+    codigo_despesa TEXT NOT NULL,
+    programa TEXT,
+    codigo_acao TEXT,
+    acao TEXT,
+    descricao TEXT,
+    orgao_id INTEGER REFERENCES orgao(id),
+    unidade_id INTEGER,
+    funcao_id INTEGER REFERENCES funcao(id),
+    subfuncao_id INTEGER,
+    natureza TEXT,
+    elemento_id INTEGER REFERENCES elemento(id),
+    localizador TEXT,
+    categoria_economica TEXT,
+    valor_orcado NUMERIC(18,2),
+    valor_atualizado NUMERIC(18,2),
+    PRIMARY KEY (ano, id_origem),
+    FOREIGN KEY (unidade_id, orgao_id) REFERENCES unidade(id, pai_id),
+    FOREIGN KEY (subfuncao_id, funcao_id) REFERENCES subfuncao(id, pai_id)
+);
+
+CREATE TABLE IF NOT EXISTS empenho_dotacao (
+    ano INTEGER NOT NULL,
+    dotacao_id TEXT NOT NULL,
+    item INTEGER NOT NULL,
+    ano_empenho INTEGER NOT NULL,
+    numero_empenho TEXT NOT NULL,
+    data_empenho DATE NOT NULL,
+    valor_empenhado NUMERIC(18,2) NOT NULL,
+    PRIMARY KEY (ano, dotacao_id, item),
+    FOREIGN KEY (ano, dotacao_id) REFERENCES dotacao(ano, id_origem)
+);
+
+CREATE TABLE IF NOT EXISTS fonte_dotacao (
+    ano INTEGER NOT NULL,
+    dotacao_id TEXT NOT NULL,
+    item INTEGER NOT NULL,
+    recurso_id INTEGER NOT NULL REFERENCES recurso(id),
+    tipo TEXT,
+    finalidade TEXT,
+    percentual_aplicacao TEXT,
+    PRIMARY KEY (ano, dotacao_id, item),
+    FOREIGN KEY (ano, dotacao_id) REFERENCES dotacao(ano, id_origem)
+);
+
+CREATE TABLE IF NOT EXISTS suplementacao (
+    ano INTEGER NOT NULL,
+    dotacao_id TEXT NOT NULL,
+    item INTEGER NOT NULL,
+    data_suplementacao DATE NOT NULL,
+    documento TEXT,
+    valor NUMERIC(18,2) NOT NULL,
+    PRIMARY KEY (ano, dotacao_id, item),
+    FOREIGN KEY (ano, dotacao_id) REFERENCES dotacao(ano, id_origem)
+);
 COMMIT;
