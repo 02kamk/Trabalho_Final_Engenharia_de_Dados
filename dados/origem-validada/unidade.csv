@@ -1,0 +1,122 @@
+id,nome,pai_id
+1,Abertura/Pavimentação/Manut. de Vias Públicas,1
+2,Administração e Controle,2
+3,Administrativo da Educação,3
+4,Agricultura,4
+5,Alfabetização de Jovens e Adultos - PROEJA,3
+6,Aquisição de Veículos/Transp. de Alunos,3
+7,Arrecadação e Fiscalização,4
+8,Auxilio ao Ensino,3
+9,Canalizações e Drenagens,1
+10,Casa da Cidadania,5
+11,Centro de Formação Mun. Thereza Dário Milanezzi,3
+12,Centros Comunitários,1
+13,Conselho Tutelar,6
+14,Convênio Corpo de Bombeiros,4
+15,Convênio Polícia Militar,4
+16,Convênio Rio Criciúma,1
+17,Convênio Trânsito - Polícia Civil,4
+18,Convênios com o Estado,2
+19,Coord. Mun. de Integração Comunitária,6
+20,Creches e Pré-Escolares,3
+21,Defensoria Publica,5
+22,Diretoria Executiva de Comunicação,6
+23,Diretoria Executiva de Tecnologia de Informação,6
+24,Diretoria Municipal de Meio Ambiente de Criciúma,1
+25,Diversidade Étnica Racial,3
+26,Edificações Públicas,1
+27,Educação Inclusiva,3
+28,Fdo. dos Dir. da Criança e do Adolescente,7
+29,Financeiro,4
+30,Frota Municipal,1
+31,Fundação Mun. de Cultura,8
+32,FUNDEB,3
+33,Fundo Mun. de Saúde,9
+34,Fundo Municipal de Incentivo Cultural,10
+35,Gab. Secretaria da Fazenda,4
+36,Gab. Secretaria de Educação,3
+37,Gab. Secretaria de Infraest. e Mob. Urbana,1
+38,Gabinete do Prefeito,6
+39,Gabinete do Vice-Prefeito,11
+40,Junta do Serviço Militar,6
+41,Limpeza Pública,2
+42,Manut. Fdo. Iluminação Pública,1
+43,Merenda Escolar,3
+44,Obras,1
+45,Oficinas e Garagens,1
+46,Parque Astronômico,3
+47,Parques/Praças/Jardins,1
+48,Pontes/Passarelas/Viadutos/Elevados,1
+49,PROCON Municipal,5
+50,Proteção ao Idoso,6
+51,Unidades de Saúde / 24Hs / Policlinicas,9
+52,Unidades Escolares,3
+53,Fundação de Esportes,12
+54,Coleta de Resíduos Sólidos,1
+55,Ouvidoria,6
+56,Núcleo de Cooperação Educacional,3
+57,Manut. Fdo. de Desenvolvimento Municipal/FUNDEM,1
+58,Diretoria de Desenvolvimento Econômico,4
+59,Fundo Mun. do Meio Ambiente,13
+60,FDO. MUN. COMBATE SUBST. ENTORPECENTES - FUCOM,6
+61,Diretoria de Transito e Transporte,6
+62,Fundo de Habitação de Interesse Social,14
+63,Gestão da Assistência Social,15
+64,Controladoria-Geral do Município,16
+65,Diretoria de Agricultura,17
+66,Diretoria de Meio Ambiente,18
+67,Diretoria de Planejamento Urbanístico,17
+68,Diretoria de Tecnologia e Inovação,19
+69,Comitê de Gestão e Compliance,20
+70,Diretoria de Convênios e Captação de Recursos,19
+71,Diretoria de Empreendedorismo,17
+72,Diretoria de Planejamento e Estratégia,19
+73,Diretoria de Transparência e Acesso à Informação,19
+74,Diretoria de Turismo,17
+75,Ouvidoria,19
+76,"Conselho de Coordenação Geral, Planejam. e Gestão",17
+77,Abertura/Pavimentação/Manut. de Vias Públicas,21
+78,Administração Fazendária,4
+79,Alfabetização de Jovens e Adultos,3
+80,Alimentação a Educação Básica,3
+81,"Canalizações, Drenagens e manejo dos Rios",21
+82,Casa da Cidadania,22
+83,Centros Comunitários,21
+84,Coleta de Resíduos Sólidos,21
+85,Controladoria-Geral do Município CGM,23
+86,Coordenadoria-Geral de Gestão e Compliance,24
+87,Defensoria Publica,22
+88,Defesa Civil,6
+89,Diretoria da Receita,4
+90,Diretoria de Atos de Oficiais e Gestão de Pessoas,6
+91,Diretoria de Cadastro Imobiliário,4
+92,Diretoria de Comunicação,6
+93,Diretoria de Iluminação e Monitoramento,21
+94,Diretoria de Licitações e Contratos,6
+95,Diretoria de Operações de Obras,21
+96,Diretoria de Parques e Praças,6
+97,Diretoria de Patrimônio,6
+98,Edificações Públicas,21
+99,Educação para a Inclusão,3
+100,Fdo Municipal do Turismo-FUMTUR / Diretoria de Turismo,17
+101,Formação de Profissionais da Educação Básica,3
+102,Frota Municipal,21
+103,Fundação Cultural de Criciúma,25
+104,"Gab. Sec. Des. Econ. Indústria, Comércio e Serviço",17
+105,Gab. Secretaria de Governança,19
+106,Gab. Secretaria de Infraestrutura e Obras,21
+107,Gabinete do Prefeito / Assessoria de Gabinete,6
+108,Gabinete do Vice-Prefeito / Assess. Vice-Prefeito,11
+109,Manut. Fdo. de Desenvolvimento Municipal/FUNDEM,21
+110,Oficinas e Garagens,21
+111,Parques/Praças/Jardins,21
+112,Pontes/Passarelas/Viadutos/Elevados,21
+113,PROCON Municipal,22
+114,Proteção ao Idoso / Fundo do Idoso,6
+115,Secretaria-Geral,6
+116,Superint. de Op. Rio Maina/Sta Luzia/Quarta Linha,21
+117,Transporte Escolar da Educação Básica,3
+118,Valorização da Diversidade Étnico-Racial na Educaç,3
+119,Valorização da Educação Básica,3
+120,Junta de Serviço Militar,6
+121,Superintendência de Organizações Comunitárias,6

@@ -1,0 +1,53 @@
+id,nome,pai_id
+1,Infra-Estrutura Urbana,1
+2,Preservação e Conservação Ambiental,2
+3,Ensino Fundamental,3
+4,Extensão Rural,4
+5,Administração Geral,5
+6,Controle Interno,5
+7,Ensino Médio,3
+8,Ensino Superior,3
+9,Saneamento Básico Urbano,6
+10,"Direitos Individuais, Coletivos e Difusos",7
+11,Lazer,8
+12,Policiamento,9
+13,Infra-Estrutura Urbana,6
+14,Educação Infantil,3
+15,Ação Judiciária,10
+16,Tecnologia da Informatização,5
+17,Administração Geral,2
+18,Serviços Urbanos,1
+19,Assistência à Criança e ao Adolescente,11
+20,Administração Financeira,5
+21,Administração Geral,12
+22,"Patrimônio Histórico, Artístico e Arqueológico",12
+23,Turismo,13
+24,Difusão Cultural,12
+25,Atenção Básica,14
+26,Vigilância Epidemiológica,14
+27,Vigilância Sanitária,14
+28,Assistência Hospitalar e Ambulatorial,14
+29,Suporte Profilático e Terapêutico,14
+30,Difusão do Conhecimento Científico e Tecnológico,15
+31,Ordenamento Territorial,5
+32,Assistência Comunitária,11
+33,Desporto Comunitário,8
+34,Tecnologia da Informatização,14
+35,Conservação de Energia,1
+36,Alimentação e Nutrição,3
+37,Defesa Civil,9
+38,Assistência ao Idoso,11
+39,Serviços Urbanos,12
+40,Turismo,1
+41,Serviços Financeiros,13
+42,Administração Geral,8
+43,Habitação Urbana,16
+44,Administração Geral,11
+45,Desporto de Rendimento,8
+46,Defesa do Interesse Púb.No Processo Judiciário,10
+47,Energia Elétrica,17
+48,Promoção Industrial,18
+49,Transporte Rodoviário,19
+50,Alimentação e Nutrição,14
+51,Defesa Terrestre,20
+52,Promoção Comercial,13

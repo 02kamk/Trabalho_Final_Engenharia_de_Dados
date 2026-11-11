@@ -1,0 +1,162 @@
+id,nome
+1,Operações de Crédito Internas-Outros Programas
+2,Recursos Ordinários
+3,Transf. de Convênios Estado Não rel. educ/saude/assist. social
+4,Operações de Créditos Externa - Outros programas
+5,Transf. de Convênios União Não rel. educ/saude/assit. social
+6,Alienações de Bens dest. a Outros Programas / superávit exercício anterior
+7,Emendas Parlamentares Individuais - Transf. c/ Final. Especifica / Super. de Exerc. Anteriores
+8,Transf. de Convênios - Estado/Outros (não rel. educ/saude/assist. social) - Super. exerc. anterior
+9,EMENDAS PARLAMENTARES INDIVIDUAIS-Transf. Especial
+10,Receitas de Impostos e de Transferência de Impostos - Educação
+11,Salário Educação
+12,Transferências do FUNDEB - 70%
+13,Emendas Parlamentares Impositivas -Transf. Do Estado
+14,Recursos do Programa Nacional de Apoio ao Transporte Escolar - PNATE
+15,Transf. de Convênios - Estado/Educação
+16,Contribuição para o Custeio dos Serviços de Iluminação Pública - COSIP / superávit de exercícios anteriores
+17,Receitas de Impostos e de Transf. de Impostos-Educação - Superávit de exercícios anteriores
+18,Emendas Parlamentares Impositivas - Transf. do Estado / Superávit Exercício Anterior
+19,Alienações de Bens dest. a Outros Programas
+20,EMENDAS PARLAMENTARES INDIVIDUAIS-Transf. Especial / superávit exercício anterior
+21,Outras Especificações / Outros Recursos Vinculados
+22,Convênio Trânsito - Militar
+23,Convênio Trânsito - Civil
+24,Transf. de Convênios - União/Educação
+25,Demais Transferências Obrigatórias não Decorrentes de Repartições de Receitas.
+26,Transferências do FUNDEB - 30%
+27,Transferências do FUNDEB - Complementação da União - VAAR
+28,TRANSFERÊNCIAS DO FUNDEB - 30% / Superávit de exercícios anteriores
+29,Receitas de Impostos e de Transferência de Impostos - Saúde
+30,Transf. do SUS/União
+31,Transf. do SUS/Estado
+32,Outras Especificações / Outros Rec. Vinculados - superavit do exercício anterior
+33,Alienações de Bens destinados a Programas de Saúde
+34,EMENDAS DE BANCADA DE PARLAMENTARES
+35,Transferências da União - emendas parlamentares de bancada vinc. a saúde
+36,Transferências da União - emendas parlamentares individuais vinc. a saúde
+37,Transferências do Sistema Único de Saúde - SUS/Estado / superávit exercício anterior
+38,Assistência financeira da União destinada à complementação ao pagto dos pisos salariais p/ profissionais da enfermagem.
+39,EMENDAS PARLAMENTARES INDIVIDUAIS-Transf. Com. Finalidade Definida
+40,Transferências de Convênios - Estado/Saúde
+41,Contribuição para o Custeio dos Serviços de Iluminação Pública - COSIP
+42,"Auxílio Financeiro Outorga Crédito Tributário ICMS Art. 5, Inciso V, EC n 123/2022"
+43,Recursos não vinculados da compensação de imposto
+44,Operações de Créditos Externa - Outros programas / superávit de exercício anterior
+45,Convênio de Trânsito - Prefeitura
+46,Transferências Destinadas ao Setor cultural - LC n 195/2022 Art. 8 - Demais Setores da Cultura
+47,Transferências Destinadas ao Setor Cultural - LC n 195/2022 Art. 5 - Audiovisual
+48,Transferências de Estado referentes a Convênios e Instrumentos Congêneres vinculados à Saúde/ Superávit Exercício Anterior
+49,Recursos do Programa Nacional de Alimentação Escolar - PNAE
+50,Fdo. Especial do Petról. e Transf. Dec.Compens. Fin. Explor. Rec. Naturais
+51,Contribuição de Intervenção do Domínio Econômico - CIDE
+52,Operações de Crédito Internas-Outros Programas / superávit de exercícios anteriores
+53,Alienação de Bens destinados a Programas de Saúde - Super. de Exercícios Anteriores
+54,Alienações de Bens destinados a Programas da Educação Básica
+55,Transferências de Convênio - Estado/Educação - Superávit do exercício anterior
+56,Outras Transf Legais e Constit. União
+57,Outras Transf. do FNDE
+58,Transferências de Convênios - União/Saúde
+59,Recursos Vinculados ao Trânsito Polícia Civil / superávit do exercício anterior
+60,Transferências da Política Nacional Aldir Blanc de Fomento à Cultura - Lei n 14.399/2022
+61,Transferências do FUNDEB - 70% / Superávit de exercícios anteriores
+62,Transf. da União - emendas parlamentares individuais vinc. a saúde - Super. de Exerc. Anteriores
+63,Assistência financeira da União destinada à complementação ao pagto dos pisos salariais p/ profissionais da enfermagem. - superávit exerc. anteriores
+64,Transferências da Política Nacional Aldir Blanc de Fomento à Cultura - Lei nº 14.399/2022
+65,Transf. de Convênios União/Outros (não relacionados à educação/saúde/assistência social) - superávit exercício anterior
+66,Transf. de Conv. Social - Estado
+67,Outros Recursos não Vinculados
+68,"Recursos Provenientes de Taxas, Contribuições e Preços Públicos"
+69,Outras Transferências de Convênios ou Instrumentos Congêneres de outras Entidades
+70,Outras Vinculações Legais
+71,Recursos Vinculados a Fundos
+72,Transf. do Sist. Unido de Assist. Social-SUAS/Estado
+73,Transf. do Sist. Unico de Assist. Social-SUAS/União
+74,Transf. do Sist. Unico de Assist. Social-SUAS/Estado- superávit de exercícios anteriores
+75,Transf. do Sist. Unico de Assist. Social-SUAS/União - superávit de exercícios anteriores
+76,Transferência da União Referente à Compensação Financeira de Recursos Minerais
+77,Transferências da União Referentes às participações na exploração de Petróleo e Gás Natural destinadas ao FEP - Lei 9.478/1997
+78,Recursos Ordinários - Superávit de Exercícios Anteriores
+79,Transf. da Política Nacional Aldir Blanc de Fomento à Cultura - Lei n 14.399/2022 - Superávit
+80,Transf. SUS União Superávit exercício anterior
+81,Convênio Trânsito - Militar / Superávit de Exercícios Anteriores
+82,Emendas de bancada de parlamentares / Superávit de exercícios anteriores
+83,Transferências Destinadas ao Setor Cultural - LC n 195/2022 Art. 5 - Audiovisual - superávit do exercício anterior
+84,Transferências Destinadas ao Setor cultural - LC n 195/2022 Art. 8 - Demais Setores da Cultura - superávit do exercício anterior
+85,Outras tranferencias do FNDE/ superavit do exercício anterior
+86,Emendas Parlamentares de Comissão
+87,Recursos Diretamente Arrecadados pela Administração Indireta e Fundos/Outros Recursos não Vinculados
+88,Recursos de Operações de Crédito Externa
+89,Recursos não Vinculados de Impostos
+90,Recursos de Operações de Crédito Internas / superávit de exercícios anteriores
+91,Outras Transferências de Convênios ou Instrumentos Congêneres dos Estados
+92,Outras Transferências de Convênios ou Instrumentos Congêneres da União
+93,Recursos de Operações de Crédito Internas
+94,EMENDAS PARLAMENTARES INDIVIDUAIS-n 1202322100001
+95,EMENDAS PARLAMENTARES INDIVIDUAIS-n 1202318800004
+96,Recursos de Operações de Créditos Externa / superávit de exercício anterior
+97,EMENDAS PARLAMENTARES INDIVIDUAIS-n 1202339490001
+98,Outras Transferências de Convênios ou Instrumentos Congêneres dos Estados - Super. exerc. anterior
+99,Recursos não Vinculados de Impostos - Superávit de Exercícios Anteriores
+100,Outras Transferências de Convênios ou Instrumentos Congêneres da União - superávit exercício anterior
+101,EMENDAS PARLAMENTARES INDIVIDUAIS-n 1202340620003
+102,Outros Recursos Vinculados - superavit do exercício anterior
+103,Recursos não Vinculados de Impostos - Educação
+104,Transferências do FUNDEB - Impostos e Transferências de Impostos - 70%
+105,Transferência do Salário-Educação
+106,Transf. de Rec. do FNDE ref. ao Programa Nacional de Alimentação Escolar (PNAE)
+107,Transferência Especial dos Estados - Emendas Parlamentares Impositivas
+108,Recursos Vinculados ao Trânsito Polícia Militar
+109,Outros Recursos Vinculados
+110,Recursos Vinculados ao Trânsito Polícia Civil
+111,Transferências do FUNDEB - Impostos e Transferências de Impostos - 30%
+112,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 2230/2021
+113,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 1731/2023
+114,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 1389/2021
+115,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 1821/2023
+116,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 0603/2022
+117,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 0914/2021
+118,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 1494/2021
+119,Recursos da Contribuição para o Custeio do Serviço de Iluminação Pública - COSIP
+120,Recursos da Contribuição de Intervenção no Domínio Econômico - CIDE
+121,Recursos Vinculados ao Trânsito Prefeitura
+122,Recursos de Operações de Crédito Internas - Contrato 0625526-94/FINISA III
+123,Superavit outras vinculações legais
+124,Recursos não Vinculados de Impostos - Saúde
+125,Transf. Fundo a Fundo de Recursos do SUS provenientes do Governo Federal - Bloco de Manutenção das Ações e Serviços Públicos de Saúde
+126,Transf. Fundo a Fundo de Recursos do SUS provenientes do Governo Estadual
+127,Transf. do Estado ref. a Convênios e Instrumentos Congêneres vinculados à Saúde
+128,Bloco de Manutenção das Ações e Serviços Públicos de Saúde - Emendas Parlamentares Individuais
+129,Bloco de Manutenção das Ações e Serviços Públicos de Saúde - Emendas Parlamentares de Bancada
+130,Transferências provenientes do Governo Federal destinadas ao vencimento dos agentes comunitários de saúde e dos agentes de combate às endemias
+131,Emendas Parlamentares de Comissão - n 60060003
+132,Transf. Fundo a Fundo de Recursos do SUS provenientes do Governo Estadual / superávit exercício anterior
+133,Recursos não Vinculados de Impostos - Saúde / superávit do exercício anterior
+134,Superávit exercício anterior-Transf. Fundo a Fundo de Recursos do SUS provenientes do Governo Federal - Bloco de Manutenção das Ações e Serviços Públi
+135,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 2026EP002887
+136,"Assistência Financeira Transporte Coletivo Art. 5, inciso IV - EC n 123/2022 / Superávit do exercício anterior"
+137,"Assistência Financeira Transporte Coletivo Art. 5, inciso IV - EC n 123/2022"
+138,Transf. de Recursos do Fundo Nacional de Assistência Social - FNAS
+139,Transferência de Recursos dos Fundos Estaduais de Assistência Social
+140,EMENDAS PARLAMENTARES INDIVIDUAIS-n 202522100020 - Desp. Correntes
+141,EMENDAS PARLAMENTARES INDIVIDUAIS-n 202522100020 - Desp. Capital
+142,EMENDAS PARLAMENTARES INDIVIDUAIS-n 202690550009 - Desp. Correntes
+143,EMENDAS PARLAMENTARES INDIVIDUAIS-n 202640620007 - Desp. Capital
+144,Transf. de Recursos do Fundo Nacional de Assistência Social - FNAS - superávit de exercícios anteriores
+145,Superávit do exercício anterior - Transf. do Estado ref. a Convênios e Instrumentos Congêneres vinculados à Educação
+146,Transf. de Rec. do FNDE ref. ao Programa Nacional de Apoio ao Transporte Escolar (PNATE)
+147,Transf. do Estado ref. a Convênios e Instrumentos Congêneres vinculados à Educação
+148,Outras Transferências de Recursos do FNDE
+149,Transferências do FUNDEB - Impostos e Transferências de Impostos - 30% / Superávit de exercícios anteriores
+150,Transferências do FUNDEB - Impostos e Transferências de Impostos (4% ETI - remuneração)
+151,Transferências do FUNDEB - Impostos e Transferências de Impostos (4% ETI - criação de matrículas)
+152,Transferências de Convênios e Instrumentos Congêneres vinculados à Assistência Social
+153,Transf. do Governo Federal ref. a Convênios e Instrumentos Congêneres vinculados à Educação
+154,Transferências da União decorrentes de emendas parlamentares de bancada
+155,Transferências Fundo a Fundo de Recursos do SUS provenientes do Governo Federal - Bloco de Estruturação da Rede de Serviços Públicos de Saúde
+156,Recursos de Alienação de Bens/Ativos - Administração Direta
+157,Recursos Vinculados ao Trânsito Prefeitura / Superávit de Exercícios Anteriores
+158,Recursos da Contribuição para o Custeio do Serviço de Iluminação Pública - COSIP / superávit de exercícios anteriores
+159,Transferências do Governo Federal referentes a Convênios e Instrumentos Congêneres vinculados à Saúde
+160,Transf. do Governo Federal ref. a Convênios e Instrumentos Congêneres vinculados à Saúde
+161,Transferência Especial dos Estados - Emendas Parlamentares Impositivas n 2026EP000504
