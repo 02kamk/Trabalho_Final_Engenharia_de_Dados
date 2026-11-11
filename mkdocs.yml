@@ -1,0 +1,6 @@
+site_name: Despesas públicas de Criciúma
+nav:
+  - Projeto: index.md
+  - Fontes e limpeza: fontes.md
+  - Validação: validacao.md
+  - Banco de origem: banco.md
