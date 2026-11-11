@@ -100,10 +100,6 @@ Exemplo: quantidade de empenhos por exercício.
 psql --dbname="$env:DATABASE_URL" -X -c "SELECT ano, count(*) AS empenhos FROM origem.empenho GROUP BY ano ORDER BY ano;"
 ```
 
-O modelo das tabelas está no diagrama abaixo e em [Modelagem](docs/modelagem.md).
-
-![Diagrama do esquema origem](docs/diagrama_origem.drawio.png)
-
 ### Refazer a limpeza a partir do ZIP
 
 Indique o ZIP da coleta e um diretório de saída que ainda não exista:
