@@ -1,12 +1,12 @@
 .env
 .venv/
 __pycache__/
+.ipynb_checkpoints/
 site/
 *.zip
 
-# Em dados/, só os CSVs públicos de dados/origem-validada são versionados.
-# Saídas locais do limpar.py (dados/regerada/, origem.sqlite3) ficam fora do Git.
-dados/*
-!dados/origem-validada/
-dados/origem-validada/*
-!dados/origem-validada/*.csv
+# Dados brutos e tratados ficam fora do Git: os brutos contêm CPF/CNPJ e os tratados passam do
+# limite de tamanho de arquivo do GitHub. Ambos são reproduzidos pelos notebooks.
+dados/
+.neon
+.env.neon

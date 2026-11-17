@@ -1,32 +1,75 @@
-# Validação das premissas
+# Validação
 
-Validação da coleta de 07/11/2026. O banco de teste gerado pelo script de limpeza contém **15 tabelas e 151.851 linhas**, com chaves primárias e estrangeiras conferidas localmente.
+Resultado do tratamento (`notebooks/tratamento.ipynb`) e da carga no Neon (PostgreSQL 18.7) com `sql/carga.sql`, conferida por `sql/validacao.sql` em 17/11/2026. A mesma carga foi testada antes num PostgreSQL 18 local, com resultado idêntico. O banco tem **15 tabelas e 3.451.595 linhas** e ocupa 772 MB.
 
-| Tabela | 2023 | 2024 | 2025 | 2026 parcial | Total |
+## Linhas por tabela
+
+| Tabela | Linhas | 10 mil ou mais |
+| --- | ---: | --- |
+| `pagamento` | 576.524 | sim |
+| `liquidacao` | 546.537 | sim |
+| `empenho` | 460.262 | sim |
+| `empenho_documento_fiscal` | 445.096 | sim |
+| `item_empenho` | 422.161 | sim |
+| `documento_fiscal` | 384.546 | sim |
+| `retencao` | 275.506 | sim |
+| `pagamento_extraorcamentario` | 153.235 | sim |
+| `material` | 84.996 | sim |
+| `anulacao_empenho` | 47.020 | sim |
+| `credor` | 28.814 | sim |
+| `diaria` | 26.808 | sim |
+| `elemento_despesa` | 50 | não (domínio) |
+| `funcao` | 28 | não (domínio) |
+| `municipio` | 12 | não (domínio) |
+
+**12 de 15 tabelas (80%) têm 10 mil linhas ou mais.** As três abaixo são tabelas de domínio, justificadas em [Modelo de dados](modelo.md).
+
+## Empenhos por município e exercício
+
+| Município | 2023 | 2024 | 2025 | 2026 | Total |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| `empenho` | 13.553 | 15.026 | 16.714 | 17.112 | 62.405 |
-| `diaria` | 2.442 | 2.943 | 3.212 | 2.858 | 11.455 |
-| `emenda` | 8 | 4 | 8 | 20 | 40 |
-| `dotacao` | 332 | 331 | 414 | 405 | 1.482 |
-| `empenho_dotacao` | 13.438 | 14.949 | 17.026 | 17.114 | 62.527 |
-| `fonte_dotacao` | 652 | 668 | 872 | 803 | 2.995 |
-| `suplementacao` | 1.051 | 1.052 | 1.710 | 1.577 | 5.390 |
+| Balneário Rincão | 6.677 | 6.637 | 8.872 | 7.523 | 29.709 |
+| Cocal do Sul | 10.273 | 11.101 | 13.187 | 11.790 | 46.351 |
+| Criciúma | 13.553 | 15.026 | 16.714 | 17.454 | 62.747 |
+| Forquilhinha | 10.256 | 10.894 | 11.513 | 10.413 | 43.076 |
+| Içara | 14.051 | 14.210 | 16.092 | 15.330 | 59.683 |
+| Lauro Müller | 6.966 | 8.065 | 9.118 | 7.247 | 31.396 |
+| Morro da Fumaça | 10.903 | 11.337 | 11.333 | 9.431 | 43.004 |
+| Nova Veneza | 3.158 | 3.360 | 4.421 | 3.965 | 14.904 |
+| Orleans | 10.479 | 9.110 | 9.757 | 9.681 | 39.027 |
+| Siderópolis | 6.945 | 6.290 | 6.759 | 6.006 | 26.000 |
+| Treviso | 6.753 | 6.950 | 7.154 | 6.755 | 27.612 |
+| Urussanga | 10.203 | 9.865 | 12.158 | 4.527 | 36.753 |
 
-| Dimensão compartilhada | Chaves distintas |
-| --- | ---: |
-| `exercicio` | 4 |
-| `orgao` | 25 |
-| `unidade` | 121 |
-| `funcao` | 20 |
-| `subfuncao` | 52 |
-| `recurso` | 161 |
-| `elemento` | 318 |
-| `credor` | 4.856 |
+O exercício de 2026 é parcial (coleta em novembro). Urussanga tem menos empenhos em 2026 que nos anos anteriores.
 
-As tabelas principais `empenho`, `diaria` e `empenho_dotacao` superam 10.000 linhas no período completo e têm datas em 2024, 2025 e 2026. Limitando a contagem aos três exercícios mais recentes, `diaria` tem 9.013 linhas. A cobertura de 2026 é parcial.
+## Conferências do tratamento
 
-O total soma registros com granularidades diferentes. O detalhamento de empenhos por dotação pode incluir empenhos da listagem geral, por isso as duas fontes devem ser analisadas separadamente para calcular valores.
+O notebook só exporta os CSVs se todas passarem:
 
-Foram removidos 35 registros repetidos de dotação e 522 detalhes repetidos. As três listagens com identificador do portal não tinham repetição de chave.
+- chaves primárias sem nulos e sem repetição, nas 15 tabelas;
+- chaves únicas sem repetição (`credor`, `material`, `documento_fiscal`, `empenho`, `municipio`, `funcao`);
+- nenhuma das 18 chaves estrangeiras com registro órfão;
+- toda retenção ligada a exatamente uma liquidação ou um empenho;
+- tipos de empenho e de anulação dentro dos valores permitidos, e exercício entre 2023 e 2026;
+- documento do credor com 11 ou 14 posições e nenhum CPF completo;
+- pelo menos 80% das tabelas com 10 mil linhas ou mais.
 
-Em 11/11/2026, a base foi carregada no PostgreSQL do Supabase. As contagens por tabela e por exercício no banco são iguais às desta página, e nenhuma das 25 chaves estrangeiras tem registros órfãos. O detalhamento está em [Banco de origem](banco.md#verificacao-da-carga-no-supabase).
+## Conferências no banco
+
+- As 15 tabelas carregaram com o mesmo número de linhas dos CSVs.
+- 15 chaves primárias, 18 chaves estrangeiras, 5 restrições de unicidade, 6 checagens e 70 restrições de não nulo foram criadas e validadas pelo PostgreSQL.
+- As 15 tabelas têm a coluna `atualizado_em` e o gatilho que a renova; testado alterando um registro e conferindo a nova data.
+- Nenhum CPF completo na tabela `credor`.
+
+## Registros descartados ou ajustados
+
+| Situação | Quantidade | Tratamento |
+| --- | ---: | --- |
+| Registros baixados e depois retirados do portal | 4 | descartados (3 empenhos, 1 diária) |
+| Liquidações publicadas duas vezes no mesmo empenho, com conteúdo idêntico | 7 | entra uma vez |
+| Liquidações e pagamentos do Atende.net de empenhos anteriores a 2023 | 500 | descartados (170 liquidações, 330 pagamentos) |
+| Retenções de Içara e Urussanga repetidas no pagamento | 23.872 | descartadas, porque já estão na liquidação (das 24.182 publicadas no pagamento, 310 não tinham par e entraram) |
+| Documentos fiscais com a mesma identificação e chave de acesso diferente | 142 | vale a primeira chave |
+| Empenhos do Atende.net sem elemento deduzível | 1.443 (2% do valor) | elemento nulo |
+| Empenhos do Betha publicados sem nome nem documento do credor | 1.118 | credor nulo |
