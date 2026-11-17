@@ -1,9 +1,12 @@
-site_name: Despesas públicas de Criciúma
+site_name: Despesas públicas da AMREC
 nav:
   - Projeto: index.md
-  - Fontes e limpeza: fontes.md
-  - Validação: validacao.md
+  - Coleta da AMREC: coleta-amrec.md
+  - Fontes e inventário: fontes.md
+  - Modelo de dados: modelo.md
+  - Modelo anterior: modelagem.md
   - Banco de origem: banco.md
+  - Validação: validacao.md
 markdown_extensions:
   - admonition
   - toc:

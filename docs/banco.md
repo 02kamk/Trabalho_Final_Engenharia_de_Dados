@@ -1,70 +1,42 @@
-# Banco de origem no Supabase
+# Banco de origem
 
-Esta página documenta a criação do banco de origem (issue #7) e a carga dos dados limpos (issue #8).
+Esta página documenta como criar o banco de origem e carregar os dados tratados. O modelo está em [Modelo de dados](modelo.md).
+
+O banco fica no [Neon](https://neon.com), um PostgreSQL gerenciado. A primeira versão do projeto usava o Supabase, cujo plano gratuito limita o banco a 500 MB; a base nova ocupa cerca de 770 MB, e o plano gratuito do Neon permite 1 GB por projeto.
 
 ## Visão geral
 
 | Arquivo | Função |
 | --- | --- |
-| `sql/origem.sql` | DDL. Cria o esquema `origem` e as 15 tabelas com chaves primárias e estrangeiras, em uma única transação. |
-| `sql/carga_inicial.sql` | Carga. Copia os CSVs de `dados/origem-validada/` para as tabelas, em uma única transação. |
-| `sql/validacao_carga.sql` | Validação. Confere a contagem de linhas contra os CSVs e procura chaves órfãs. Só faz leitura. |
-| `.env.example` | Modelo da variável de conexão `DATABASE_URL`. |
-| `.env` | Cópia local com a senha real. Está no `.gitignore` e nunca vai para o repositório. |
+| `notebooks/coleta.ipynb` | Coleta os dados brutos em `dados/brutos/amrec/`. |
+| `notebooks/tratamento.ipynb` | Gera um CSV por tabela em `dados/tratados/`. |
+| `sql/origem.sql` | DDL. Recria do zero o esquema `origem`, com as 15 tabelas, chaves, restrições, índices e a coluna de controle `atualizado_em`, em uma única transação. |
+| `sql/carga.sql` | Carga. Copia os CSVs de `dados/tratados/` para as tabelas, em uma única transação. |
+| `sql/validacao.sql` | Validação. Mostra as contagens, o critério de 10 mil linhas, as restrições, a distribuição por ano, a proteção de CPF e o tamanho do esquema. Só faz leitura. |
+| `.neon` | Liga a pasta ao projeto Neon (organização, projeto e branch). Fora do Git. |
+| `.env.neon` | Strings de conexão do Neon (`DATABASE_URL` e `DATABASE_URL_UNPOOLED`). Fora do Git. |
 
-## Modelo
+Os CSVs de `dados/tratados/` não ficam no Git: somam cerca de 400 MB, acima do limite de arquivo do GitHub. Eles são reproduzidos rodando os dois notebooks.
 
-O esquema `origem` tem 15 tabelas:
+## Passo a passo
 
-- **Dimensões (8):** `exercicio`, `orgao`, `unidade`, `funcao`, `subfuncao`, `recurso`, `elemento`, `credor`.
-- **Registros (4):** `empenho`, `diaria`, `emenda`, `dotacao`.
-- **Detalhes da dotação (3):** `empenho_dotacao`, `fonte_dotacao`, `suplementacao`.
+### 1. Acesso ao projeto Neon
 
-Regras de chave:
+O projeto é `aged-dawn-21484247` (branch `production`). Há duas formas de obter a conexão:
 
-- As listagens com ID do portal (`empenho`, `diaria`, `emenda`) usam `(ano, id_origem)` como chave primária.
-- A `dotacao` usa uma chave derivada do conteúdo, porque o portal não fornece identificador.
-- Os detalhes usam `(ano, dotacao_id, item)` e referenciam `dotacao(ano, id_origem)`.
-- As hierarquias órgão → unidade e função → subfunção são garantidas por chaves estrangeiras compostas (`unidade(id, pai_id)` e `subfuncao(id, pai_id)`). Assim, um registro não pode apontar para uma unidade de outro órgão.
+- **Pela CLI do Neon** (recomendado para quem tem acesso à organização): instale com `npm i -g neon`, entre com `neon login` e, na raiz do repositório, rode `neon link --project-id aged-dawn-21484247 --no-env-pull -y` e depois `neon env pull --file .env.neon`.
+- **Pela string de conexão**: o responsável pelo projeto envia a URL por um canal privado da equipe, nunca pelo GitHub, e cada integrante a grava em `.env.neon` como `DATABASE_URL_UNPOOLED=...`.
 
-## Passo a passo da implantação
+O Neon fornece duas conexões para o mesmo banco:
 
-### 1. Criar o projeto no Supabase
+| Variável | Tipo | Quando usar |
+| --- | --- | --- |
+| `DATABASE_URL_UNPOOLED` | direta | DDL, carga, `pg_dump` e leituras grandes do pipeline (Spark) |
+| `DATABASE_URL` | com pool (PgBouncer, host com `-pooler`) | aplicações com muitas conexões curtas |
 
-1. Acesse o [painel do Supabase](https://supabase.com/dashboard) e entre na organização da equipe.
-2. Clique em **New project** e preencha:
-    - **Name:** `despesas-criciuma` (sugestão)
-    - **Database password:** gere uma senha forte e guarde-a. Ela vai para o `.env`.
-    - **Region:** `South America (São Paulo)`, a mais próxima.
-3. Aguarde o provisionamento, que leva alguns minutos.
+Use a direta para tudo o que está nesta página e para o pipeline: comandos de sessão e leituras longas podem falhar pela conexão com pool.
 
-### 2. Acesso dos integrantes
-
-O projeto foi criado em uma organização no plano gratuito do Supabase, que não permite convidar outros membros para o painel. O convite seria feito em **Organization settings → Team → Invite**, por e-mail. Contas do GitHub não podem ser convidadas diretamente, porque servem apenas como forma de login.
-
-Por isso, a equipe acessa o banco **pela string de conexão PostgreSQL**, e não pelo painel. Esse acesso cobre tudo o que o trabalho exige: aplicar o DDL, fazer a carga, rodar o pipeline e consultar os dados.
-
-- O responsável pelo projeto envia a `DATABASE_URL` aos integrantes por um canal privado da equipe, nunca pelo GitHub.
-- Cada integrante cola a URL no próprio `.env`, a partir do `.env.example`.
-- Para conferir as tabelas sem o painel, use o `psql` ou um cliente como DBeaver ou pgAdmin com a mesma URL.
-
-### 3. Configurar a conexão local
-
-1. No painel do projeto, clique em **Connect** e abra a aba **Connection String**.
-2. Selecione **Session pooler**. Ele funciona em redes IPv4. A conexão direta exige IPv6.
-3. Copie a URL e cole em `DATABASE_URL` no arquivo `.env`, na raiz do repositório. Se o arquivo não existir, copie `.env.example` para `.env`.
-4. Troque `[YOUR-PASSWORD]` pela senha do passo 1 e mantenha `?sslmode=require` no final.
-
-```text
-DATABASE_URL=postgresql://postgres.<PROJECT_REF>:<SENHA>@aws-0-<REGIAO>.pooler.supabase.com:5432/postgres?sslmode=require
-```
-
-!!! warning "Erros comuns na URL"
-    - **Colchetes:** ao trocar `[YOUR-PASSWORD]`, apague também os colchetes `[ ]`. Se eles ficarem, o login falha com `password authentication failed for user "postgres"`.
-    - **Caracteres especiais:** se a senha tiver `@ : / ? # % & [ ]`, codifique esses caracteres na URL. Por exemplo, `@` vira `%40`, `#` vira `%23`, `[` vira `%5B` e `]` vira `%5D`. Sem isso, a URL é lida errado, e um `#` faz tudo o que vem depois dele ser ignorado.
-    - **Conexão direta:** o host `db.<PROJECT_REF>.supabase.co` só responde por IPv6. Em rede IPv4, o `psql` mostra `não foi possível traduzir o nome de hospedeiro`. Nesse caso, use a URL do **Session pooler**.
-
-### 4. Instalar o cliente `psql`
+### 2. Instalar o cliente `psql`
 
 O `psql` acompanha o instalador do PostgreSQL. No Windows, instale o PostgreSQL ou apenas as **Command Line Tools** e confirme:
 
@@ -72,128 +44,70 @@ O `psql` acompanha o instalador do PostgreSQL. No Windows, instale o PostgreSQL 
 psql --version
 ```
 
-### 5. Aplicar o DDL
+### 3. Gerar os CSVs
+
+Rode `notebooks/tratamento.ipynb` do início ao fim (no VS Code ou Jupyter, **Restart & Run All**). Ele termina gravando os 15 CSVs em `dados/tratados/` e só exporta se todas as conferências passarem: chaves primárias e únicas, chaves estrangeiras sem órfãos, regras de domínio e o critério de 80% das tabelas com 10 mil linhas ou mais.
+
+### 4. Criar as tabelas, carregar e validar
 
 Na raiz do repositório, no PowerShell:
 
 ```powershell
-$env:DATABASE_URL = (Get-Content .env | Where-Object { $_ -like 'DATABASE_URL=*' }) -replace '^DATABASE_URL=', ''
+$env:DATABASE_URL = (Get-Content .env.neon | Where-Object { $_ -like 'DATABASE_URL_UNPOOLED=*' }) -replace '^DATABASE_URL_UNPOOLED=', '' -replace '^"|"$', ''
 psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/origem.sql
-```
-
-O script roda dentro de `BEGIN ... COMMIT`. Se algum comando falhar, nada é criado. Ele usa `CREATE ... IF NOT EXISTS` e pode ser executado de novo sem erro.
-
-### 6. Conferir a criação
-
-```powershell
-psql --dbname="$env:DATABASE_URL" -X -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'origem' ORDER BY 1;"
-```
-
-O resultado deve listar as **15 tabelas** da seção [Modelo](#modelo). Elas também aparecem no **Table Editor** do painel, escolhendo o esquema `origem`.
-
-### 7. Carregar os dados (issue #8)
-
-1. Os 15 CSVs da base normalizada estão versionados em `dados/origem-validada/`. É essa cópia pública, com CPF/CNPJ removidos, que a carga usa. Para reprocessar a partir do ZIP da coleta, veja [Fontes e limpeza](fontes.md) e gere em outro diretório, sem sobrescrever esta pasta.
-2. Confira se as tabelas estão vazias. A carga inicial não substitui linhas existentes, e uma chave repetida desfaz tudo.
-3. Na raiz do repositório, com a `DATABASE_URL` carregada como no passo 5, execute a carga e depois a validação:
-
-```powershell
-psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/carga_inicial.sql
-psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/validacao_carga.sql
+psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/carga.sql
+psql --dbname="$env:DATABASE_URL" -X -v ON_ERROR_STOP=1 -f sql/validacao.sql
 Remove-Item Env:DATABASE_URL
 ```
 
-A carga segue a ordem das chaves estrangeiras: primeiro as dimensões, depois os registros e por último os detalhes. Ela é transacional, então uma chave duplicada ou órfã desfaz tudo. Use sempre arquivos gerados na mesma execução da limpeza.
+!!! danger "O DDL apaga o esquema `origem`"
+    O `origem.sql` começa com `DROP SCHEMA IF EXISTS origem CASCADE`: tudo o que estiver no esquema é apagado e recriado. Como o banco é inteiramente reproduzido a partir dos CSVs, isso garante que cada carga parte de um estado limpo. Não guarde no esquema `origem` nada que não venha da carga.
 
-O `sql/validacao_carga.sql` só faz leitura e mostra quatro conferências:
+A carga segue a ordem das chaves estrangeiras e é transacional: qualquer erro desfaz tudo. Cada `\copy` lista as colunas e usa `HEADER MATCH`, então um CSV com colunas diferentes do esperado interrompe a carga em vez de deslocar valores. Ao final, roda `ANALYZE`.
 
-1. **Contagem de linhas:** o número de linhas de cada tabela comparado com o de registros do CSV correspondente.
-2. **Chaves órfãs:** para cada uma das 25 chaves estrangeiras, quantos registros apontam para um pai inexistente. O esperado é 0.
-3. **Restrições no catálogo:** quantas chaves e restrições existem e se todas estão validadas pelo PostgreSQL.
-4. **Linhas por exercício:** a distribuição de 2023 a 2026, para comparar com [Validação](validacao.md).
+## Limites do plano gratuito do Neon
 
-O resultado de cada conferência mostra `OK` ou o tipo de problema encontrado.
+| Limite (por projeto, por mês) | Cota | Uso atual |
+| --- | --- | --- |
+| Armazenamento | 1 GB | 772 MB |
+| Processamento | 100 CU-horas | carga completa em pouco mais de 1 minuto |
+| Transferência de dados para fora | 5 GB | uma extração completa de todas as tabelas transfere cerca de 0,5 GB |
+
+Se o processamento ou a transferência acabarem, o Neon suspende o banco até o início do mês seguinte. Os dados não se perdem, mas nenhuma conexão funciona. Por isso:
+
+- no desenvolvimento do pipeline, teste a ingestão com poucas tabelas ou com `LIMIT`, e rode a extração completa só quando necessário;
+- use a ingestão incremental pela coluna `atualizado_em` nas execuções agendadas;
+- acompanhe o consumo no painel do projeto no Neon.
+
+O banco suspende sozinho depois de 5 minutos sem uso e volta na conexão seguinte, com uma espera de frações de segundo.
+
+## Tamanho por tabela
+
+| Tabela | Total | Dados | Índices |
+| --- | ---: | ---: | ---: |
+| `empenho` | 226 MB | 170 MB | 56 MB |
+| `pagamento` | 170 MB | 147 MB | 23 MB |
+| `documento_fiscal` | 64 MB | 32 MB | 32 MB |
+| `liquidacao` | 58 MB | 36 MB | 22 MB |
+| `item_empenho` | 46 MB | 27 MB | 19 MB |
+| `empenho_documento_fiscal` | 45 MB | 23 MB | 22 MB |
+| demais 9 tabelas | ~100 MB | | |
+
+Medição feita antes da inclusão de `atualizado_em`, que acrescentou cerca de 55 MB (coluna e índice) ao total.
 
 ## Segurança
 
-- A senha fica só no `.env` local, que está no `.gitignore`. Antes de cada commit, confira com `git status` que o `.env` não aparece.
-- O esquema `origem` não deve ser adicionado aos esquemas expostos pela Data API (**Project settings → Data API → Exposed schemas**). Assim os dados só são acessíveis por conexão PostgreSQL autenticada.
-- A tabela `emenda` inclui identificadores de favorecidos. Não compartilhe a string de conexão fora da equipe.
+- `.env`, `.env.neon` e `.neon` estão no `.gitignore`. Antes de cada commit, confira com `git status` que nenhum deles aparece.
+- CPF nunca é gravado completo: o tratamento mascara no padrão `***XXXXXX**` os CPFs publicados inteiros, inclusive dentro de textos livres. A validação confere que não há CPF completo na tabela `credor`.
+- Não compartilhe a string de conexão fora da equipe.
 
 ## Situação
 
 | Etapa | Status |
 | --- | --- |
 | DDL versionado (`sql/origem.sql`) | Concluído |
-| `.env.example` e `.env` fora do Git | Concluído |
-| Integridade relacional validada localmente (`origem.sqlite3`) | Concluído |
-| Projeto criado no Supabase | Concluído |
-| Acesso dos integrantes (pela string de conexão, por causa do plano gratuito) | Concluído |
-| DDL aplicado no Supabase (11/11/2026) | Concluído |
-| Carga no Supabase (issue #8, 11/11/2026) | Concluído |
-| Contagem de linhas e integridade referencial no Supabase (issue #8) | Concluído |
+| CSVs gerados pelo tratamento (`dados/tratados/`) | Concluído |
+| Teste completo em PostgreSQL 18 local | Concluído |
+| Carga no Neon (PostgreSQL 18.7), 17/11/2026: DDL em 8 s, carga em 67 s, validação sem pendências | Concluído |
 
-### Verificação do DDL no Supabase
-
-Conferência feita em 11/11/2026 pelo Session pooler, em PostgreSQL 17.11. O esquema `origem` tem as 15 tabelas, todas com chave primária, e 25 chaves estrangeiras. Na data dessa verificação, as tabelas ainda estavam vazias. O esquema `origem` não está exposto na Data API, que continua com a configuração padrão.
-
-| Tabela | Colunas | Chaves estrangeiras |
-| --- | ---: | ---: |
-| `exercicio` | 1 | 0 |
-| `orgao` | 2 | 0 |
-| `unidade` | 3 | 1 |
-| `funcao` | 2 | 0 |
-| `subfuncao` | 3 | 1 |
-| `recurso` | 2 | 0 |
-| `elemento` | 2 | 0 |
-| `credor` | 2 | 0 |
-| `empenho` | 16 | 8 |
-| `diaria` | 9 | 4 |
-| `emenda` | 13 | 1 |
-| `dotacao` | 18 | 6 |
-| `empenho_dotacao` | 7 | 1 |
-| `fonte_dotacao` | 7 | 2 |
-| `suplementacao` | 6 | 1 |
-
-Consulta usada para conferir:
-
-```sql
-SELECT table_name, constraint_type, count(*)
-FROM information_schema.table_constraints
-WHERE table_schema = 'origem' AND constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY')
-GROUP BY 1, 2
-ORDER BY 1, 2;
-```
-
-Referência: [Conexões PostgreSQL no Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres).
-
-### Verificação da carga no Supabase
-
-Carga feita em 11/11/2026 com `sql/carga_inicial.sql`, a partir dos CSVs versionados em `dados/origem-validada/`. A transação terminou com `COMMIT` em cerca de 18 segundos. Em seguida, `sql/validacao_carga.sql` conferiu o resultado.
-
-**Contagem de linhas.** As 15 tabelas têm exatamente o número de registros dos CSVs, que também foram contados com um leitor de CSV, e não por linhas de texto.
-
-| Tabela | Registros no CSV | Linhas no banco | Status |
-| --- | ---: | ---: | --- |
-| `exercicio` | 4 | 4 | OK |
-| `orgao` | 25 | 25 | OK |
-| `unidade` | 121 | 121 | OK |
-| `funcao` | 20 | 20 | OK |
-| `subfuncao` | 52 | 52 | OK |
-| `recurso` | 161 | 161 | OK |
-| `elemento` | 318 | 318 | OK |
-| `credor` | 4.856 | 4.856 | OK |
-| `empenho` | 62.405 | 62.405 | OK |
-| `diaria` | 11.455 | 11.455 | OK |
-| `emenda` | 40 | 40 | OK |
-| `dotacao` | 1.482 | 1.482 | OK |
-| `empenho_dotacao` | 62.527 | 62.527 | OK |
-| `fonte_dotacao` | 2.995 | 2.995 | OK |
-| `suplementacao` | 5.390 | 5.390 | OK |
-| **Total** | **151.851** | **151.851** | **OK** |
-
-**Integridade referencial.** Nenhuma das 25 chaves estrangeiras tem registros órfãos. O catálogo do PostgreSQL mostra 15 chaves primárias, 25 chaves estrangeiras, 9 restrições de unicidade e 1 checagem, todas validadas.
-
-**Distribuição por exercício.** As contagens de 2023 a 2026 no banco são iguais às da validação local, em [Validação](validacao.md).
-
-**Dados pessoais.** A carga usou a cópia pública dos CSVs. Nela, o campo `cpf_cnpj` de `emenda` está vazio e os identificadores encontrados em campos de texto estão mascarados. As chaves relacionais e as contagens foram preservadas.
+Referências: [Planos do Neon](https://neon.com/docs/introduction/plans), [Conexões com e sem pool](https://neon.com/docs/connect/connection-pooling).

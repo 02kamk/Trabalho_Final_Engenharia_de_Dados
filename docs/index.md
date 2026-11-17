@@ -1,7 +1,11 @@
-# Despesas públicas de Criciúma
+# Despesas públicas da AMREC
 
-O projeto usa a coleta municipal de 7 de novembro de 2026, com arquivos dos exercícios de 2023 a 2026. O último exercício é parcial.
+Base de dados das despesas dos 12 municípios da Associação dos Municípios da Região Carbonífera (AMREC), em Santa Catarina, de 2023 a 2026. O exercício de 2026 é parcial.
 
-- [Fontes e limpeza](fontes.md) — critérios e reprodução da issue #6.
-- [Validação](validacao.md) — contagens e cobertura da issue #5.
-- [Banco de origem](banco.md) — modelo, passo a passo do Supabase e carga das issues #7 e #8.
+| Etapa | Onde |
+| --- | --- |
+| Coleta | `notebooks/coleta.ipynb` · [Coleta da AMREC](coleta-amrec.md) |
+| Inventário das fontes | [Fontes e inventário](fontes.md) |
+| Modelo (15 tabelas em 3FN) | [Modelo de dados](modelo.md) · `sql/origem.sql` |
+| Tratamento | `notebooks/tratamento.ipynb` |
+| Carga e validação | [Banco de origem](banco.md) · [Validação](validacao.md) · `sql/carga.sql` · `sql/validacao.sql` |
