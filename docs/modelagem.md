@@ -1,15 +1,13 @@
 # Modelagem normalizada do banco de origem (modelo anterior)
 
 !!! note "Modelo substituído"
-    Esta página documenta o primeiro modelo do projeto, feito só com os dados de Criciúma (issue #15). Ele foi substituído pelo modelo da AMREC, descrito em [Modelo de dados](modelo.md), porque não permitia cumprir o requisito de 80% das tabelas com 10 mil linhas ou mais. O diagrama abaixo é do modelo anterior; o diagrama do modelo novo está pendente.
+    Esta página documenta o primeiro modelo do projeto, feito só com os dados de Criciúma (issue #15). Ele foi substituído pelo modelo da AMREC, descrito em [Modelo de dados](modelo.md), porque não permitia cumprir o requisito de 80% das tabelas com 10 mil linhas ou mais. O diagrama do modelo novo está em [Modelo de dados](modelo.md#diagrama).
 
 Esta página documenta a modelagem do esquema `origem` (issue #15). O DDL está em `sql/origem.sql`, e a criação no Supabase está em [Banco de origem](banco.md).
 
 ## Diagrama
 
-![Diagrama do esquema origem](diagrama_origem.drawio.png)
-
-Cada linha é uma chave estrangeira, com a cor da tabela que a declara. O esquema tem 15 tabelas, todas com chave primária, e 25 chaves estrangeiras.
+O diagrama do modelo anterior não é mais mantido. O esquema tem 15 tabelas, todas com chave primária, e 25 chaves estrangeiras.
 
 ## Estrutura
 

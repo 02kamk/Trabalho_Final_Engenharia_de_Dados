@@ -9,6 +9,12 @@ Convenções:
 - `id_*` gerados pelo tratamento são números sequenciais.
 - Valores em reais são `numeric(15,2)`.
 
+## Diagrama
+
+![Diagrama do esquema origem](diagrama_origem.drawio.png)
+
+Cada linha é uma chave estrangeira, com a cor da tabela que a declara.
+
 ## Visão geral
 
 ```
