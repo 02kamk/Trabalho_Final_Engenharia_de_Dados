@@ -6,6 +6,7 @@ nav:
   - Modelo de dados: modelo.md
   - Modelo anterior: modelagem.md
   - Banco de origem: banco.md
+  - Data lake no MinIO: minio.md
   - Validação: validacao.md
 markdown_extensions:
   - admonition
