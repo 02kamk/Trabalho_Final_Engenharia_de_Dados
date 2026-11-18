@@ -58,7 +58,7 @@ Particularidades:
 
 - Içara e Urussanga também têm `parcelas`, `liquidacoes.parcela` e `pagamentos.idLiquidacao`. Os demais municípios não têm esses campos.
 - 7 liquidações aparecem duas vezes no mesmo empenho com conteúdo idêntico. Outras 12 repetem o `idLiquidacao` com data ou valor diferente e são parcelas distintas.
-- Em 1.465 empenhos, o ano da data do empenho é diferente do exercício. Isso precisa ser conferido no tratamento.
+- Em 1.465 registros (943 de Urussanga e 522 de Içara), o ano da data do empenho é diferente do exercício. São restos a pagar que esses dois portais listam de novo em cada exercício: os valores empenhado, liquidado e pago do exercício vêm zerados, os pagamentos têm valor zero e o pago aparece só como total em `valorPagoRestosEmpenho`. Em Urussanga, o mesmo empenho antigo aparece em até três exercícios, com IDs diferentes, e 290 desses registros repetem empenhos de 2023 em diante que já estão na base pelo ano de emissão. O tratamento os descarta.
 
 ### Diárias
 
