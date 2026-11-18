@@ -1,0 +1,21 @@
+services:
+  airflow:
+    image: apache/airflow:3.4.0-python3.11
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    ports:
+      - '127.0.0.1:8080:8080'
+    volumes:
+      - airflow-data:/opt/airflow
+      - ./dags:/opt/airflow/dags:ro
+    networks:
+      - pipeline
+
+volumes:
+  airflow-data:
+
+networks:
+  pipeline:
+    external: true
+    name: amrec-pipeline
