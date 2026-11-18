@@ -69,7 +69,7 @@ A carga segue a ordem das chaves estrangeiras e é transacional: qualquer erro d
 
 | Limite (por projeto, por mês) | Cota | Uso atual |
 | --- | --- | --- |
-| Armazenamento | 1 GB | 772 MB |
+| Armazenamento | 1 GB | 771 MB |
 | Processamento | 100 CU-horas | carga completa em pouco mais de 1 minuto |
 | Transferência de dados para fora | 5 GB | uma extração completa de todas as tabelas transfere cerca de 0,5 GB |
 

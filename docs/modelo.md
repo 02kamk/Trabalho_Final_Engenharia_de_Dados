@@ -68,7 +68,7 @@ O que não se resolver fica com elemento nulo, e a quantidade é registrada.
 
 ## Cadastros
 
-### `credor` (28.814)
+### `credor` (28.757)
 
 | Coluna | Tipo | Restrição | Origem |
 | --- | --- | --- | --- |
@@ -96,7 +96,7 @@ Os emitentes de documentos fiscais e os beneficiários de pagamentos extraorçam
 
 Algumas descrições passam do tamanho máximo de um índice comum do PostgreSQL (2,7 KB). A unicidade é garantida por um índice sobre o hash `md5` da descrição.
 
-### `documento_fiscal` (384.546)
+### `documento_fiscal` (384.114)
 
 | Coluna | Tipo | Restrição | Origem |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ Recibos, guias e documentos "Outros" reutilizam números, e só a data de emiss�
 
 ## Execução da despesa
 
-### `empenho` (460.262)
+### `empenho` (458.797)
 
 | Coluna | Tipo | Restrição | Origem |
 | --- | --- | --- | --- |
@@ -147,7 +147,7 @@ Os valores liquidado, pago e anulado não ficam no empenho: eles são a soma das
 
 O valor total é guardado porque não é derivado: em 10.852 itens (2,6%) o total publicado difere de quantidade × valor unitário.
 
-### `empenho_documento_fiscal` (445.096, só Betha)
+### `empenho_documento_fiscal` (444.553, só Betha)
 
 | Coluna | Tipo | Restrição |
 | --- | --- | --- |
@@ -177,7 +177,7 @@ O valor total é guardado porque não é derivado: em 10.852 itens (2,6%) o tota
 | `valor` | `numeric(15,2)` | não nulo | |
 | `valor_anulado` | `numeric(15,2)` | | soma das anulações da liquidação; nulo no Atende.net, que não publica |
 
-### `retencao` (275.506)
+### `retencao` (275.193)
 
 | Coluna | Tipo | Restrição | Origem |
 | --- | --- | --- | --- |
@@ -190,7 +190,7 @@ O valor total é guardado porque não é derivado: em 10.852 itens (2,6%) o tota
 
 As duas ligações nunca são preenchidas juntas. Quando a retenção pertence a uma liquidação, o empenho se obtém por ela, e repeti-lo criaria dependência transitiva.
 
-### `pagamento` (576.524)
+### `pagamento` (575.084)
 
 | Coluna | Tipo | Restrição | Origem |
 | --- | --- | --- | --- |

@@ -27,7 +27,7 @@ O fluxo tem três etapas:
 - **Os dados não ficam no Git.** Os brutos contêm CPF e CNPJ, e os tratados (~400 MB) passam do limite de arquivo do GitHub. A pasta `dados/` inteira está no `.gitignore`, e os notebooks reproduzem tudo.
 - **Dados pessoais.** CPF nunca é gravado completo: o tratamento mascara no padrão `***XXXXXX**` os CPFs publicados inteiros, inclusive dentro de textos livres.
 - **O `sql/origem.sql` apaga e recria o esquema `origem`.** O banco é inteiramente reproduzido a partir dos CSVs; não guarde nada no esquema que não venha da carga.
-- **Limites do plano gratuito do Neon:** 1 GB de armazenamento (a base ocupa 772 MB) e 5 GB de transferência por mês. Uma extração completa de todas as tabelas transfere cerca de 0,5 GB; veja [Banco de origem](docs/banco.md#limites-do-plano-gratuito-do-neon).
+- **Limites do plano gratuito do Neon:** 1 GB de armazenamento (a base ocupa 771 MB) e 5 GB de transferência por mês. Uma extração completa de todas as tabelas transfere cerca de 0,5 GB; veja [Banco de origem](docs/banco.md#limites-do-plano-gratuito-do-neon).
 - **Credenciais.** As strings de conexão ficam em `.env.neon`, fora do Git. Não commite esse arquivo nem compartilhe a conexão fora da equipe.
 
 ## Pré-requisitos
