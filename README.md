@@ -12,6 +12,8 @@ O fluxo tem três etapas:
 2. **Tratamento:** [notebooks/tratamento.ipynb](notebooks/tratamento.ipynb) une as duas fontes, limpa e padroniza os dados, confere chaves e regras de domínio e gera um CSV por tabela.
 3. **Carga:** os scripts em [sql/](sql) criam o esquema `origem`, carregam os CSVs e validam o resultado.
 
+A partir do banco de origem, o pipeline leva os dados para um data lake no MinIO, em camadas (Landing em CSV; Bronze, Silver e Gold em Delta Lake), orquestrado pelo Airflow. Por enquanto existe a ingestão piloto da tabela `municipio` para a Landing; veja [Data lake no MinIO](docs/minio.md).
+
 | Pasta ou arquivo | Conteúdo |
 | --- | --- |
 | [notebooks/coleta.ipynb](notebooks/coleta.ipynb) | Coleta dos dados brutos em `dados/brutos/amrec/` |
@@ -19,6 +21,9 @@ O fluxo tem três etapas:
 | [sql/origem.sql](sql/origem.sql) | DDL do esquema `origem` |
 | [sql/carga.sql](sql/carga.sql) | Carga dos CSVs no banco |
 | [sql/validacao.sql](sql/validacao.sql) | Conferência da carga (somente leitura) |
+| [dags/](dags) | DAGs do Airflow (ingestão piloto para a Landing) |
+| [compose.airflow.yml](compose.airflow.yml) | Airflow Standalone em Docker, para desenvolvimento |
+| [.env.example](.env.example) | Modelo das variáveis de acesso ao MinIO |
 | [docs/](docs) | Documentação em MkDocs |
 
 ## Avisos
@@ -28,7 +33,7 @@ O fluxo tem três etapas:
 - **Dados pessoais.** CPF nunca é gravado completo: o tratamento mascara no padrão `***XXXXXX**` os CPFs publicados inteiros, inclusive dentro de textos livres.
 - **O `sql/origem.sql` apaga e recria o esquema `origem`.** O banco é inteiramente reproduzido a partir dos CSVs; não guarde nada no esquema que não venha da carga.
 - **Limites do plano gratuito do Neon:** 1 GB de armazenamento (a base ocupa 771 MB) e 5 GB de transferência por mês. Uma extração completa de todas as tabelas transfere cerca de 0,5 GB; veja [Banco de origem](docs/banco.md#limites-do-plano-gratuito-do-neon).
-- **Credenciais.** As strings de conexão ficam em `.env.neon`, fora do Git. Não commite esse arquivo nem compartilhe a conexão fora da equipe.
+- **Credenciais.** As strings de conexão do Neon ficam em `.env.neon`, e as credenciais do MinIO em um `.env` local, ambos fora do Git. Não commite esses arquivos nem compartilhe as credenciais fora da equipe.
 
 ## Pré-requisitos
 
@@ -148,4 +153,5 @@ A documentação completa começa em [docs/index.md](docs/index.md):
 - [Fontes e inventário](docs/fontes.md): consultas usadas e descartadas, colunas, granularidade e chaves.
 - [Modelo de dados](docs/modelo.md): as 15 tabelas, colunas, chaves e decisões de normalização.
 - [Banco de origem](docs/banco.md): Neon, carga e limites do plano gratuito.
+- [Data lake no MinIO](docs/minio.md): bucket e camadas, conexão e ingestão piloto pelo Airflow.
 - [Validação](docs/validacao.md): contagens, conferências e registros descartados.

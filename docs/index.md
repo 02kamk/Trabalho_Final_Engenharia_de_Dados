@@ -9,3 +9,4 @@ Base de dados das despesas dos 12 municípios da Associação dos Municípios da
 | Modelo (15 tabelas em 3FN) | [Modelo de dados](modelo.md) · `sql/origem.sql` |
 | Tratamento | `notebooks/tratamento.ipynb` |
 | Carga e validação | [Banco de origem](banco.md) · [Validação](validacao.md) · `sql/carga.sql` · `sql/validacao.sql` |
+| Data lake e ingestão | [Data lake no MinIO](minio.md) · `dags/` · `compose.airflow.yml` |
