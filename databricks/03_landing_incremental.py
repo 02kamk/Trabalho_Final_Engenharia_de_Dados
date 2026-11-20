@@ -94,7 +94,7 @@ def ingerir(tabela):
     # Landing: CSV bruto, sem regra de negócio.
     (
         origem.write
-        .mode("errorifexists")
+        .mode("overwrite")
         .option("header", "true")
         .option("timestampFormat", FORMATO_TIMESTAMP)
         .csv(caminho)
