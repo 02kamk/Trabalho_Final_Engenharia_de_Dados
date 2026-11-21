@@ -193,7 +193,7 @@ def tipar_e_limpar(bronze, config):
             colunas.append(F.expr(f"try_cast(nullif(trim(`{coluna}`), '') AS {tipo})").alias(coluna))
 
     colunas.append(
-        F.expr(f"try_to_timestamp(atualizado_em, '{FORMATO_TIMESTAMP}')").alias("atualizado_em")
+        F.try_to_timestamp(F.col("atualizado_em"), F.lit(FORMATO_TIMESTAMP)).alias("atualizado_em")
     )
     colunas += [F.col("_run_id"), F.col("_data_ingestao")]
     return bronze.select(*colunas)
@@ -215,7 +215,7 @@ def preparar(tabela, config, run_ids):
             (
                 F.nullif(F.trim(F.col(c)), F.lit("")).isNotNull()
                 & (
-                    F.expr(f"try_to_timestamp(atualizado_em, '{FORMATO_TIMESTAMP}')")
+                    F.try_to_timestamp(F.col("atualizado_em"), F.lit(FORMATO_TIMESTAMP))
                     if c == "atualizado_em"
                     else F.expr(f"try_cast(nullif(trim(`{c}`), '') AS {config['tipos'][c]})")
                 ).isNull()
