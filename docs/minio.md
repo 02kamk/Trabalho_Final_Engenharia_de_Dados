@@ -1,5 +1,8 @@
 # Data lake no MinIO
 
+!!! note "MVP local substituído"
+    Esta página documenta o primeiro MVP do data lake, local, com MinIO e Airflow. O projeto migrou para o Databricks Free Edition (issue #48), descrito em [Lakehouse no Databricks](databricks.md). O MVP fica registrado aqui até a homologação da arquitetura cloud.
+
 O Trabalho Final usa o bucket privado `datalake-amrec` no MinIO. Cada camada tem um prefixo na raiz do bucket.
 
 | Prefixo | Formato | Conteúdo |
