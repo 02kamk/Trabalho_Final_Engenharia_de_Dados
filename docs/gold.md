@@ -216,3 +216,72 @@ WHERE ano = 2025;
 | --- | --- | --- |
 | #17 | `UPDATE origem.municipio SET data_coleta = current_date WHERE ibge = '4218350';` | `dim_municipio` com duas versões de Treviso: a antiga fechada e a nova com `registro_atual` verdadeiro |
 | #18 | `UPDATE origem.empenho SET historico = historico \|\| ' ' WHERE id_empenho = 1;` | "1 empenho(s) recalculado(s)" no `07` e uma nova linha por tabela da Silver em `controle_gold` |
+
+## Resultados no Databricks
+
+Primeira execução no Databricks Free Edition (Serverless) em 24/11/2026, com o `elemento_grupo.csv` provisório.
+
+### Carga inicial
+
+| Tabela | Resultado |
+| --- | --- |
+| `dim_municipio` | 12 municípios |
+| `dim_funcao` | 28 funções + membro −1 |
+| `dim_elemento_despesa` | 50 elementos + membro −1 (Custeio 16, Investimento 2, Pessoal 9, Outros 24) |
+| `fato_empenho` | 458.797 empenhos, empenhado total R$ 11.488.211.116,97 (2023 a 2026) |
+
+As conferências do `07` passaram: o fato tem o mesmo número de empenhos e o mesmo valor da Silver. Do valor
+empenhado, 6,1% está sem função (Treviso e Morro da Fumaça, do Atende.net) e 0,1% está sem elemento.
+
+![Conferência do 07 na carga inicial](img/gold/carga_inicial_conferencia.png)
+
+### Indicadores de 2025
+
+| Indicador | Valor |
+| --- | --- |
+| Total empenhado | R$ 2.906.831.009,20 |
+| Empenhado por habitante | R$ 6.134,51 |
+| % do empenhado com pessoal | 40,9% |
+| % do empenhado com saúde | 22,1% |
+
+O % com pessoal tende a subir quando o `elemento_grupo.csv` definitivo for gerado, porque hoje elementos
+ambíguos (como 91 e 92) ficam em "Outros".
+
+![Indicadores de 2025](img/gold/kpis_2025.png)
+
+### Teste da #17: histórico SCD tipo 2
+
+Depois do `UPDATE` em `origem.municipio` (Treviso) e de rodar 03 → 07, a `dim_municipio` passou a ter duas
+versões de Treviso. A antiga (`sk` 10, coleta de 16/11) foi fechada no momento da alteração na origem
+(`registro_atual` falso). A nova (`sk` 15, coleta de 24/11) vale a partir desse momento até 9999-12-31. Os
+horários estão em UTC. O `sk` novo não é 13 porque a coluna de identidade do Delta não garante números seguidos.
+
+```sql
+SELECT sk_municipio, ibge, nome, data_coleta, data_inicio, data_fim, registro_atual
+FROM workspace.amrec_gold.dim_municipio
+WHERE ibge = '4218350'
+ORDER BY data_inicio;
+```
+
+![Duas versões de Treviso na dim_municipio](img/gold/teste_17_scd2_treviso.png)
+
+### Teste da #18: carga incremental do fato
+
+Depois do `UPDATE` em `origem.empenho` (id 1) e de rodar 03 → 07, o `07` leu só o empenho alterado. A
+`controle_gold` mostra as duas execuções:
+
+| Execução | Tabela da Silver | Linhas lidas | Watermark |
+| --- | --- | --- | --- |
+| Carga inicial | `empenho` | 458.797 | 2026-11-21 15:42 |
+| Carga inicial | `anulacao_empenho` | 47.020 | 2026-11-21 15:18 |
+| Após o teste | `empenho` | 1 | 2026-11-24 12:02 (avançou) |
+| Após o teste | `anulacao_empenho` | 0 | 2026-11-21 15:18 (sem mudança) |
+
+O fato continuou com 458.797 empenhos e o mesmo valor total: o empenho foi atualizado pelo `MERGE`, sem
+duplicar.
+
+```sql
+SELECT * FROM workspace.amrec.controle_gold ORDER BY processado_em DESC;
+```
+
+![Duas execuções na controle_gold](img/gold/teste_18_controle_gold.png)
