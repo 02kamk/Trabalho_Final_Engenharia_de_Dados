@@ -162,7 +162,7 @@ sucesso, em 5m 6s.
 
 ![Execução do amrec_pipeline com as 6 tarefas concluídas](img/databricks/job_19_execucao.png)
 
-#### Teste do Job
+### Resultado do teste do Job
 
 Depois da execução manual sem mudanças, o `UPDATE` no empenho 2 foi feito no Neon e o Job foi rodado de novo. A
 `controle_gold` mostra as duas execuções (horários em UTC):

@@ -211,7 +211,8 @@ WHERE ano = 2025;
 2. Garantir a Silver em dia (`03_landing_incremental` → `04_bronze` → `05_silver`).
 3. Rodar `06_gold_dimensoes`, depois `07_gold_fatos` e, para conferir o resultado, `08_testes_gold`.
 
-No dia a dia, o Job `amrec_pipeline` roda tudo isso em ordem (ver [Orquestração](databricks.md#orquestracao-com-databricks-jobs)).
+No dia a dia, o Job `amrec_pipeline` roda tudo isso em ordem (ver
+[Orquestração](databricks.md#orquestracao-com-databricks-jobs)).
 
 ## Testes
 
