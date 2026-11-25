@@ -3,7 +3,8 @@
 > Issues [#16](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/16) (modelagem dimensional),
 > [#17](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/17) (dimensões SCD tipo 2) e
 > [#18](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/18) (carga incremental dos fatos).
-> As fórmulas dos indicadores atendem à [#20](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/20).
+> As fórmulas dos indicadores atendem à [#20](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/20),
+> e os testes automatizados, à [#55](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/55).
 
 A Gold fica no schema `workspace.amrec_gold` e é gerada por dois notebooks, que rodam depois da Silver:
 
@@ -208,9 +209,49 @@ WHERE ano = 2025;
     ```
 
 2. Garantir a Silver em dia (`03_landing_incremental` → `04_bronze` → `05_silver`).
-3. Rodar `06_gold_dimensoes` e depois `07_gold_fatos`.
+3. Rodar `06_gold_dimensoes`, depois `07_gold_fatos` e, para conferir o resultado, `08_testes_gold`.
+
+No dia a dia, o Job `amrec_pipeline` roda tudo isso em ordem (ver [Orquestração](databricks.md#orquestracao-com-databricks-jobs)).
 
 ## Testes
+
+### Testes automatizados
+
+O notebook `databricks/08_testes_gold.py` (issue #55) roda depois do `07` e confere se as camadas rodaram até
+o fim e se a Gold está correta. Ele só lê as tabelas, sem alterar nada, e pode ser rodado quantas vezes for
+preciso. No Job do pipeline, ele é a última tarefa antes do dashboard.
+
+Cada teste conta as linhas com problema e termina em uma de três situações:
+
+| Situação | Significado |
+| --- | --- |
+| `OK` | Nenhuma linha com problema |
+| `FALHOU` | Erro no pipeline ou na Gold. No fim do notebook, a execução para com erro, e o Job não atualiza o dashboard |
+| `AVISO` | Característica dos dados, e não erro do pipeline. Aparece na tabela de resultados, mas não para a execução |
+
+| Grupo | O que confere |
+| --- | --- |
+| 1. Pipeline | Toda execução da Landing chegou à Bronze (`controle_landing` × `controle_bronze`) e à Silver (`controle_bronze` × `controle_silver`); o watermark da `controle_gold` alcançou o último `_processado_silver_em` de `empenho` e `anulacao_empenho`; as 5 tabelas da Silver lidas pela Gold têm uma linha por chave |
+| 2. Estrutura | As 8 tabelas existem e têm as colunas do [modelo](#modelo-dimensional) |
+| 3. Dimensões | `sk` única; uma versão atual por chave; versões contínuas de 1900-01-01 a 9999-12-31, sem buraco nem sobreposição; versão atual igual à Silver; 12 municípios; membro `-1` em `dim_funcao` e `dim_elemento_despesa`; áreas e grupos dentro da lista; `dim_data` com os 1.461 dias de 2023 a 2026 |
+| 4. Fato | Um registro por empenho; mesma quantidade e mesmo valor original da Silver; anulações iguais às da Silver; empenhado = original − anulado; colunas obrigatórias preenchidas; toda `sk` existe na dimensão e aponta para a versão válida na data de emissão |
+| 5. População | Uma população por município e ano, de 2023 a 2026 (48 combinações) |
+| 6. Agregados | Uma linha por município e ano (e por área); a `agg_empenhado_municipio_ano` tem a mesma quantidade e o mesmo empenhado que o fato em cada município e ano; pessoal + custeio + investimento + outros = total; as áreas somam o total; população preenchida |
+| 7. Indicadores | Os 4 indicadores calculados pela `agg_` e direto pelo fato dão o mesmo valor em todos os anos; valor por habitante positivo e percentuais entre 0% e 100% |
+
+Os dois avisos são: empenho com anulações maiores que o valor original (empenhado negativo) e empenho do
+Atende.net com função ou anulação, o que contrariaria as [regras de negócio](#regras-de-negocio).
+
+O teste "versão da dimensão na data de emissão" é o que confere o SCD tipo 2 no fato: para cada empenho, ele
+busca na Silver o código do município, da função e do elemento e verifica se a `sk` gravada no fato é dessa
+mesma chave e se a versão vale na data de emissão. Empenho sem função ou sem elemento tem que apontar para o
+membro `-1`.
+
+Para rodar fora do Job, abra o `08_testes_gold` e clique em **Run all**. A última célula mostra a tabela com
+todos os testes e o resumo (`N testes: X OK, Y falharam, Z aviso(s)`). Antes dela, o notebook mostra os 4
+indicadores de cada ano.
+
+### Testes manuais do SCD tipo 2 e da carga incremental
 
 | Issue | Alteração na origem (Neon) | Resultado esperado depois de rodar 03 → 07 |
 | --- | --- | --- |
@@ -285,3 +326,15 @@ SELECT * FROM workspace.amrec.controle_gold ORDER BY processado_em DESC;
 ```
 
 ![Duas execuções na controle_gold](img/gold/teste_18_controle_gold.png)
+
+### Testes automatizados da #55
+
+O `08_testes_gold` rodou no Databricks Free Edition (Serverless) em 25/11/2026, depois dos testes da #17 e da
+#18: **59 testes, 58 OK, 0 falharam e 1 aviso**. Todas as conferências de pipeline, estrutura, dimensões, fato,
+população, agregados e indicadores passaram com os dados reais.
+
+O aviso é de 1 empenho com anulações maiores que o valor original, ou seja, com empenhado negativo. É um dado da
+origem, e não erro do pipeline: o teste "valor anulado diferente da Silver" passou, então o fato tem exatamente as
+anulações publicadas pelo portal.
+
+![Resultado do 08_testes_gold](img/gold/teste_55_resultado.png)
