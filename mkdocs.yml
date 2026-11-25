@@ -7,6 +7,7 @@ nav:
   - Modelo anterior: modelagem.md
   - Banco de origem: banco.md
   - Lakehouse no Databricks: databricks.md
+  - Camada Gold: gold.md
   - MVP local (MinIO e Airflow): minio.md
   - Validação: validacao.md
 markdown_extensions:

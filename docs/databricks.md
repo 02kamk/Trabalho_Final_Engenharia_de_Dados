@@ -40,16 +40,6 @@ Foi criado o Volume `workspace.amrec.landing`. A carga-piloto leu `origem.munici
 
 A leitura do arquivo após a gravação confirmou os mesmos 12 registros da origem.
 
-## Notebooks
-
-Os notebooks ficam em `databricks/`, no formato de código-fonte do Databricks, e devem ser rodados em ordem.
-
-| Notebook | Issue | O que faz |
-| --- | --- | --- |
-| `01_piloto_landing_municipio.py` | #48 | Cria o schema `amrec`, o Volume da Landing e os schemas das camadas; grava `municipio` em CSV e confere as 12 linhas. |
-| `02_teste_delta_bronze.py` | #11 | Lê a execução mais recente do piloto na Landing, grava uma tabela Delta de teste na Bronze, confere o formato e as contagens e remove a tabela. |
-| `03_landing_incremental.py` | #12 | Ingestão incremental das 15 tabelas do esquema `origem` para a Landing. |
-
 ## Teste Delta na Bronze
 
 O notebook `02` confirma que o workspace grava e lê tabelas Delta em `workspace.amrec_bronze`. Ele grava a tabela temporária `_teste_delta`, verifica com `DESCRIBE DETAIL` que o formato é `delta`, compara as contagens da origem, da Landing e da tabela Delta, mostra o `DESCRIBE HISTORY` e apaga a tabela ao final.
@@ -82,10 +72,22 @@ O novo watermark é calculado a partir do CSV lido de volta, e não da consulta 
 !!! warning "Recarga completa da origem"
     O `sql/origem.sql` apaga e recria o esquema `origem`. Depois de uma recarga, todas as linhas recebem um `atualizado_em` novo, e a execução seguinte do notebook `03` grava as 15 tabelas inteiras de novo (cerca de 0,5 GB de transferência no Neon). Exclusões na origem também não chegam à Landing, porque a linha some em vez de ser marcada.
 
+## Notebooks
+
+Os notebooks ficam em `databricks/`, no formato de código-fonte do Databricks. O `01_piloto_landing_municipio.py`
+(#48) e o `02_teste_delta_bronze.py` (#11) foram o piloto da migração, descrito acima; o pipeline roda do `03` ao
+`07`, em ordem:
+
+| Camada | Notebook | Destino |
+| --- | --- | --- |
+| Landing | `databricks/03_landing_incremental.py` | Volume `workspace.amrec.landing` (controle `workspace.amrec.controle_landing`) |
+| Bronze | `databricks/04_bronze.py` | `workspace.amrec_bronze` (controle `workspace.amrec.controle_bronze`) |
+| Silver | `databricks/05_silver.py` | `workspace.amrec_silver` (controle `workspace.amrec.controle_silver`) |
+| Gold | `databricks/06_gold_dimensoes.py` e `databricks/07_gold_fatos.py` | `workspace.amrec_gold` (controle `workspace.amrec.controle_gold`); ver [Camada Gold](gold.md) |
+
 ## Próximas etapas
 
-- Transformar os CSVs da Landing em tabelas Delta na Bronze.
-- Implementar as regras de qualidade e padronização na Silver.
-- Construir o modelo dimensional na Gold, com dimensões SCD tipo 2 e fatos incrementais.
+- Gerar o `elemento_grupo.csv` definitivo a partir dos brutos do Betha (ver [Camada Gold](gold.md)).
+- Montar o dashboard a partir das tabelas `agg_` da Gold.
 - Configurar a execução agendada no Databricks Jobs/Workflows.
 - Validar a arquitetura cloud com o grupo e o professor antes de descontinuar o MVP local.

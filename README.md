@@ -12,7 +12,7 @@ O fluxo tem três etapas:
 2. **Tratamento:** [notebooks/tratamento.ipynb](notebooks/tratamento.ipynb) une as duas fontes, limpa e padroniza os dados, confere chaves e regras de domínio e gera um CSV por tabela.
 3. **Carga:** os scripts em [sql/](sql) criam o esquema `origem`, carregam os CSVs e validam o resultado.
 
-A partir do banco de origem, o pipeline leva os dados para um Lakehouse no [Databricks](docs/databricks.md) Free Edition, em camadas: Landing (CSV em um Volume) e Bronze, Silver e Gold (Delta Lake). A ingestão incremental das 15 tabelas para a Landing e o teste de escrita Delta na Bronze já funcionam; as transformações entre as camadas estão em andamento. Antes do Databricks, o grupo montou um MVP local com MinIO e Airflow, mantido como registro em [MVP local](docs/minio.md).
+A partir do banco de origem, o pipeline leva os dados para um Lakehouse no [Databricks](docs/databricks.md) Free Edition, em camadas: Landing (CSV em um Volume) e Bronze, Silver e Gold (Delta Lake). As quatro camadas já estão implementadas, da ingestão incremental das 15 tabelas na Landing ao modelo dimensional na [Gold](docs/gold.md). Antes do Databricks, o grupo montou um MVP local com MinIO e Airflow, mantido como registro em [MVP local](docs/minio.md).
 
 | Pasta ou arquivo | Conteúdo |
 | --- | --- |
@@ -21,7 +21,7 @@ A partir do banco de origem, o pipeline leva os dados para um Lakehouse no [Data
 | [sql/origem.sql](sql/origem.sql) | DDL do esquema `origem` |
 | [sql/carga.sql](sql/carga.sql) | Carga dos CSVs no banco |
 | [sql/validacao.sql](sql/validacao.sql) | Conferência da carga (somente leitura) |
-| [databricks/](databricks) | Notebooks do Lakehouse: piloto, teste Delta e ingestão incremental para a Landing |
+| [databricks/](databricks) | Notebooks do Lakehouse: piloto, teste Delta e as camadas Landing, Bronze, Silver e Gold |
 | [dags/](dags) | MVP local: DAG piloto do Airflow |
 | [compose.airflow.yml](compose.airflow.yml) | MVP local: Airflow Standalone em Docker |
 | [.env.example](.env.example) | MVP local: variáveis de acesso ao MinIO |
@@ -155,5 +155,6 @@ A documentação completa começa em [docs/index.md](docs/index.md):
 - [Modelo de dados](docs/modelo.md): as 15 tabelas, colunas, chaves e decisões de normalização.
 - [Banco de origem](docs/banco.md): Neon, carga e limites do plano gratuito.
 - [Lakehouse no Databricks](docs/databricks.md): arquitetura em camadas, notebooks e ingestão incremental para a Landing.
+- [Camada Gold](docs/gold.md): modelo dimensional, regras de negócio e indicadores.
 - [MVP local (MinIO e Airflow)](docs/minio.md): primeira versão do data lake, substituída pelo Databricks.
 - [Validação](docs/validacao.md): contagens, conferências e registros descartados.
