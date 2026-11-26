@@ -1,0 +1,32 @@
+# Airflow + Spark do pipeline, com o data lake no Azure Data Lake Storage Gen2.
+# Uso (no Ubuntu/WSL, na raiz do repositório):
+#   docker compose -f compose.pipeline.yml up -d --build
+# Painel: http://localhost:8080 (usuário admin; a senha aparece no log do contêiner).
+services:
+  airflow:
+    build: docker/airflow-spark
+    image: amrec-airflow-spark:local
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: America/Sao_Paulo
+    env_file:
+      # Credenciais ficam só nesses arquivos, fora do Git.
+      - path: .env          # AZURE_STORAGE_ACCOUNT, AZURE_STORAGE_KEY, AZURE_CONTAINER
+        required: true
+      - path: .env.neon     # DATABASE_URL_UNPOOLED
+        required: true
+    ports:
+      - '127.0.0.1:8080:8080'
+    volumes:
+      - airflow-data:/opt/airflow
+      - ./dags:/opt/airflow/dags:ro
+      - ./pipeline:/opt/airflow/pipeline:ro
+      - ./databricks/referencia:/opt/airflow/referencia:ro
+      # Cache dos pacotes Java do Spark (Delta, conector do Azure, driver do Postgres):
+      # são baixados na primeira execução e reaproveitados depois.
+      - spark-ivy:/home/airflow/.ivy2
+
+volumes:
+  airflow-data:
+  spark-ivy:

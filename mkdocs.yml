@@ -6,7 +6,8 @@ nav:
   - Modelo de dados: modelo.md
   - Modelo anterior: modelagem.md
   - Banco de origem: banco.md
-  - Lakehouse no Databricks: databricks.md
+  - Pipeline no Azure com Airflow: azure.md
+  - Lakehouse no Databricks (anterior): databricks.md
   - Camada Gold: gold.md
   - MVP local (MinIO e Airflow): minio.md
   - Validação: validacao.md
