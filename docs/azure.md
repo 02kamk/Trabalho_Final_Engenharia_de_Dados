@@ -36,7 +36,9 @@ autenticado com a chave de acesso da conta.
 | --- | --- | --- |
 | `landing/<tabela>/run_id=<execução>/` | CSV bruto exportado do Neon (`pipeline/03_landing.py`) | ✅ Implementada |
 | `controle/controle_landing` | Watermark de cada tabela e linhas de cada execução | ✅ Implementada |
-| `bronze/`, `silver/`, `gold/` | Camadas Delta, com a lógica dos notebooks `databricks/04` a `07` | ⏳ A adaptar (grupo) |
+| `bronze/<tabela>` | Delta com o CSV da Landing em texto e colunas de controle (`pipeline/04_bronze.py`) | 🟡 Implementada, ainda não executada no Azure |
+| `controle/controle_bronze` | Execuções da Landing já processadas pela Bronze | 🟡 Idem |
+| `silver/`, `gold/` | Camadas Delta, com a lógica dos notebooks `databricks/05` a `07` | ⏳ A adaptar (grupo) |
 | `referencia/` | Cópias de `databricks/referencia/*.csv`, usadas pela Gold | ⏳ Com a Gold |
 
 O modelo da Gold, as regras de negócio e os indicadores estão em [Camada Gold](gold.md).
@@ -67,7 +69,8 @@ volta cada CSV gravado para conferir a quantidade de linhas e calcular o novo wa
 | `pipeline/comum.py` | Sessão Spark com Delta e acesso ao Azure, caminhos do lake, leitura do Neon e funções para ler e gravar tabelas Delta no lake (usadas também pelas próximas camadas) |
 | `pipeline/00_teste_conexao.py` | Teste de ponta a ponta: lê o Neon, grava, lê e faz MERGE numa tabela Delta em `_teste/` |
 | `pipeline/03_landing.py` | Ingestão incremental Neon → Landing |
-| `dags/amrec_pipeline.py` | A DAG do pipeline (por enquanto, só a tarefa `landing`) |
+| `pipeline/04_bronze.py` | Landing → Bronze (Delta, append, só execuções novas) |
+| `dags/amrec_pipeline.py` | A DAG do pipeline (tarefas `landing` e `bronze`) |
 
 Os pacotes Java do Spark (Delta, `hadoop-azure` e o driver do PostgreSQL) são baixados do Maven Central na primeira
 execução e ficam guardados no volume `spark-ivy`.
@@ -143,3 +146,41 @@ Neon). As seguintes leem só as linhas com `atualizado_em` maior que o watermark
   foi interrompida uma vez (o contêiner foi recriado no meio da carga) e retomada pelo Airflow: as tabelas já
   gravadas não foram repetidas, porque cada uma só entra no controle depois de conferida.
 - **Reexecução sem mudanças na origem:** 0 linhas gravadas (carga incremental).
+
+
+## Bronze: como executar no Azure
+
+O `pipeline/04_bronze.py` adapta o `databricks/04_bronze.py` (issue #13). Ele foi escrito e revisado, mas **ainda não foi
+executado contra o Azure**: quem tem a chave de acesso da conta deve fazer o roteiro abaixo antes de dar a etapa como
+validada.
+
+**Pré-requisitos:** os arquivos `.env` e `.env.neon` preenchidos (ver [Credenciais](#credenciais)) e a Landing já
+carregada, ou seja, `controle/controle_landing` com linhas.
+
+```bash
+cd "/mnt/c/.../Trabalho_Final_Engenharia_de_Dados"
+git checkout feat/bronze-azure   # ou main, depois do merge
+
+# 1. Garantir que o contêiner está ligado e com o código atual
+docker compose -f compose.pipeline.yml up -d --build
+
+# 2. Se a Landing ainda não foi carregada
+docker compose -f compose.pipeline.yml exec airflow python /opt/airflow/pipeline/03_landing.py
+
+# 3. Rodar a Bronze
+docker compose -f compose.pipeline.yml exec airflow python /opt/airflow/pipeline/04_bronze.py
+```
+
+Também dá para acionar a DAG `amrec_pipeline` no Airflow: a tarefa `bronze` roda depois da `landing`.
+
+**Como conferir o resultado**
+
+1. No fim do log, a tabela `controle_bronze` lista uma linha por tabela e execução da Landing.
+2. O total de linhas da Bronze deve ser igual à soma de `linhas` em `controle/controle_landing` (3.447.345 na primeira carga).
+3. No portal do Azure, em **amreclakekm → Contêineres → datalake-amrec**, devem existir as pastas `bronze/<tabela>` (15) e
+   `controle/controle_bronze`, cada uma com uma subpasta `_delta_log`.
+4. Uma segunda execução, sem nada novo na Landing, deve imprimir `nada novo na Landing` em todas as tabelas.
+
+**Se algo falhar:** o controle só é gravado depois da conferência de linhas, então basta corrigir e rodar de novo. Se a
+execução tiver gravado parte da Bronze antes de falhar, o script apaga as linhas daquele `run_id` antes de gravar outra vez,
+e nada fica duplicado.
