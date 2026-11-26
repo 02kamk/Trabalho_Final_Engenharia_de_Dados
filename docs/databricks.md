@@ -2,6 +2,11 @@
 
 > Implementação da Issue [#48](https://github.com/02kamk/Trabalho_Final_Engenharia_de_Dados/issues/48).
 
+!!! note "Arquitetura substituída"
+    O pipeline saiu do Databricks e passou a rodar com Airflow e Spark na VM do grupo, com o data lake no Azure
+    Data Lake Storage (Milestone 8). Ver [Pipeline no Azure com Airflow](azure.md). Esta página fica como registro
+    da etapa anterior; os notebooks continuam em `databricks/`.
+
 ## Decisão de arquitetura
 
 O projeto iniciou um MVP local com Airflow e MinIO. Para reduzir dependência da máquina pessoal e permitir a continuidade do trabalho em cloud, a arquitetura do Lakehouse está sendo migrada para o Databricks Free Edition.
