@@ -1,4 +1,4 @@
-"""Pipeline da AMREC com o lake no Azure: ingestão Neon → Landing e transformação Landing → Bronze.
+"""Pipeline da AMREC com o lake no Azure: ingestão Neon → Landing, Landing → Bronze e Bronze → Silver.
 
 Cada tarefa roda um script de pipeline/ dentro do contêiner do Airflow (Spark em modo local). Uma tarefa só
 começa se a anterior terminou com sucesso. As camadas Bronze, Silver e Gold entram nesta lista (ETAPAS) conforme
@@ -19,8 +19,8 @@ from airflow.sdk import dag
 ETAPAS = [
     ("landing", "03_landing.py"),
     ("bronze", "04_bronze.py"),
+    ("silver", "05_silver.py"),
     # Próximas etapas, a cargo do grupo:
-    # ("silver", "05_silver.py"),
     # ("gold_dimensoes", "06_gold_dimensoes.py"),
     # ("gold_fatos", "07_gold_fatos.py"),
 ]
