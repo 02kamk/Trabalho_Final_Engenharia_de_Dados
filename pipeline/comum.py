@@ -47,6 +47,8 @@ def criar_spark(nome_app, memoria_driver="3g"):
         .config(f"spark.hadoop.fs.azure.account.key.{conta}.dfs.core.windows.net", variavel("AZURE_STORAGE_KEY"))
         .config("spark.driver.memory", memoria_driver)
         .config("spark.sql.session.timeZone", "UTC")
+        .config("spark.sql.parquet.datetimeRebaseModeInWrite", "CORRECTED")
+        .config("spark.sql.parquet.datetimeRebaseModeInRead", "CORRECTED")
         .config("spark.ui.enabled", "false")
         .getOrCreate()
     )
